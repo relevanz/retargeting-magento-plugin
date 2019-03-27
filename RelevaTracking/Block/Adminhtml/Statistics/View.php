@@ -47,6 +47,10 @@ class View extends \Magento\Backend\Block\Widget{
     {
         return (int)$this->getRequest()->getParam('store', 0);
     }
+    
+    public function getApiKey($storeId = 0){
+        return $this->_adminHelper->getApiKey($this->_getStoreId());
+    }
 
     /**
      * @return bool

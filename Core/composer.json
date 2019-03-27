@@ -1,23 +1,22 @@
 {
-  "name": "extensions/core",
-  "description": "Extensions Core",
-  "require": {
-    "php": "~5.5.0|~5.6.0",
-    "magento/magento-composer-installer": "*"
-  },
-  "type": "magento2-module",
-  "version": "1.0.0",
-  "license": [
-    "OSL-3.0",
-    "AFL-3.0"
-  ],
-  "extra": {
-    "map": [
-      [
-        "*",
-        "Extensions/Core"
-      ]
+    "name": "extensions/core",
+    "description": "Extensions Core",
+    "require": {
+        "php": "~5.5.0|~5.6.0|~7.1.3|~7.2.0",
+        "magento/magento-composer-installer": "*"
+    },
+    "type": "magento2-module",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Extensions\\Core\\": ""
+        }
+    },
+    "version": "1.0.0",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
     ]
-  }
-
 }
