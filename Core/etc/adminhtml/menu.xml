@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:Backend/etc/menu.xsd">
+    <menu>
+        <add id="extensions::core" title="Extensions" module="Extensions_Core" sortOrder="9999" resource="Magento_Backend::content"/>
+    </menu>
+</config>

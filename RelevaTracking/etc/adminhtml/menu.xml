@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:Backend/etc/menu.xsd">
+    <menu>
+        <add id="extensions_relevatracking::relevatracking" title="releva.nz" module="Extensions_RelevaTracking" sortOrder="100" parent="extensions::core" resource="Magento_Backend::content"/>
+        <add id="extensions_relevatracking::statistics" title="Releva Dashboard" module="Extensions_RelevaTracking" sortOrder="10" parent="extensions_relevatracking::relevatracking" action="extensions_relevatracking/statistics" resource="Extensions_RelevaTracking::statistics"/>
+        <add id="extensions_relevatracking::settings" title="Settings" module="Extensions_RelevaTracking" sortOrder="20" parent="extensions_relevatracking::relevatracking" action="adminhtml/system_config/edit/section/extensions_relevatracking" resource="Magento_Backend::content"/>
+    </menu>
+</config>

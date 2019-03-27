@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <extensions_relevatracking>
+            <settings>
+                <enabled>1</enabled>
+                <client_id></client_id>
+            </settings>
+            <tracking>
+                <front_page_enabled>1</front_page_enabled>
+                <category_page_enabled>1</category_page_enabled>
+                <product_page_enabled>1</product_page_enabled>
+                <order_success_page_enabled>1</order_success_page_enabled>
+            </tracking>
+        </extensions_relevatracking>
+    </default>
+</config>
