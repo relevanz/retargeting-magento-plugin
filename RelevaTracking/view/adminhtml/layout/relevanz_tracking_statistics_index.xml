@@ -3,7 +3,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="page.main.actions">
-            <block class="Magento\Backend\Block\Store\Switcher" name="adminhtml.extensions.relevatracking.statistics.store_switcher" as="store_switcher">
+            <block class="Magento\Backend\Block\Store\Switcher" name="adminhtml.extensions.relevanztracking.statistics.store_switcher" as="store_switcher">
                 <arguments>
                     <argument name="use_confirm" xsi:type="string">0</argument>
                     <argument name="switch_websites" xsi:type="string">0</argument>
@@ -14,7 +14,7 @@
             </block>
         </referenceContainer>
         <referenceContainer name="content">
-            <block class="Extensions\RelevaTracking\Block\Adminhtml\Statistics\View" name="adminhtml.extensions.relevatracking.statistics.view" as="statistics_view" />
+            <block class="Relevanz\Tracking\Block\Adminhtml\Statistics\View" name="adminhtml.extensions.relevanztracking.statistics.view" as="statistics_view" />
         </referenceContainer>
     </body>
 </page>

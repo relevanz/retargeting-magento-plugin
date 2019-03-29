@@ -7,7 +7,7 @@
  * Time: 1:13 PM
  */
 
-namespace Extensions\RelevaTracking\Model;
+namespace Relevanz\Tracking\Model;
 
 class Api{
 

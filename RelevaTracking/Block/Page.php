@@ -11,9 +11,9 @@
  * tracking url example: https://pix.hyj.mobi/rt?t=d&action=s&cid=CLIENT_ID
  */
 
-namespace Extensions\RelevaTracking\Block;
+namespace Relevanz\Tracking\Block;
 
-class Page extends \Extensions\RelevaTracking\Block\AbstractTracking{
+class Page extends \Relevanz\Tracking\Block\AbstractTracking{
 
     /**
      * @return string

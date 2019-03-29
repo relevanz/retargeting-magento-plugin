@@ -6,14 +6,14 @@
  * Date: 6/26/17
  * Time: 11:38 AM
  */
-namespace Extensions\RelevaTracking\Controller\Adminhtml\Statistics;
+namespace Relevanz\Tracking\Controller\Adminhtml\Statistics;
 
 use Magento\Framework\Controller\ResultFactory;
 
-class KeyValidation extends \Extensions\RelevaTracking\Controller\Adminhtml\Statistics
+class KeyValidation extends \Relevanz\Tracking\Controller\Adminhtml\Statistics
 {
     /**
-     * @var \Extensions\RelevaTracking\Model\Api
+     * @var \Relevanz\Tracking\Model\Api
      */
     protected $_api;
 
@@ -22,14 +22,14 @@ class KeyValidation extends \Extensions\RelevaTracking\Controller\Adminhtml\Stat
      * @param \Magento\Framework\Registry $coreRegistry
      * @param \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-     * @param \Extensions\RelevaTracking\Model\Api $api
+     * @param \Relevanz\Tracking\Model\Api $api
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Registry $coreRegistry,
         \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Extensions\RelevaTracking\Model\Api $api
+        \Relevanz\Tracking\Model\Api $api
     ) {
         $this->_coreRegistry        =   $coreRegistry;
         $this->resultForwardFactory =   $resultForwardFactory;

@@ -6,7 +6,7 @@
  * Date: 6/16/17
  * Time: 6:08 PM
  */
-namespace Extensions\RelevaTracking\Block;
+namespace Relevanz\Tracking\Block;
 
 class AbstractTracking extends \Magento\Framework\View\Element\Template{
 
@@ -20,7 +20,7 @@ class AbstractTracking extends \Magento\Framework\View\Element\Template{
     );
 
     /**
-     * @var \Extensions\RelevaTracking\Helper\Data
+     * @var \Relevanz\Tracking\Helper\Data
      */
     protected $_helper;
 
@@ -30,11 +30,11 @@ class AbstractTracking extends \Magento\Framework\View\Element\Template{
     protected $_registry;
 
     /**
-     * @param \Extensions\RelevaTracking\Helper\Data $helper
+     * @param \Relevanz\Tracking\Helper\Data $helper
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param array $data
      */
-    public function __construct(\Extensions\RelevaTracking\Helper\Data $helper,
+    public function __construct(\Relevanz\Tracking\Helper\Data $helper,
                                 \Magento\Framework\Registry $registry,
                                 \Magento\Framework\View\Element\Template\Context $context,
                                 array $data = [])

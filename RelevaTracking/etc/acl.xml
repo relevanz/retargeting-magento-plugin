@@ -6,7 +6,7 @@
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">
                         <resource id="Magento_Config::config">
-                            <resource id="Extensions_RelevaTracking::config" title="releva.nz Tracking Config" sortOrder="150" />
+                            <resource id="Relevanz_Tracking::config" title="releva.nz Tracking Config" sortOrder="150" />
                         </resource>
                     </resource>
                 </resource>

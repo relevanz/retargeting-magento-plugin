@@ -6,14 +6,14 @@
  * Date: 6/27/17
  * Time: 11:51 AM
  */
-namespace Extensions\RelevaTracking\Controller\Adminhtml\Statistics;
+namespace Relevanz\Tracking\Controller\Adminhtml\Statistics;
 
 use Magento\Framework\Controller\ResultFactory;
 
-class KeyPost extends \Extensions\RelevaTracking\Controller\Adminhtml\Statistics
+class KeyPost extends \Relevanz\Tracking\Controller\Adminhtml\Statistics
 {
     /**
-     * @var \Extensions\RelevaTracking\Model\Api
+     * @var \Relevanz\Tracking\Model\Api
      */
     protected $_api;
 
@@ -28,7 +28,7 @@ class KeyPost extends \Extensions\RelevaTracking\Controller\Adminhtml\Statistics
      * @param \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
      * @param \Magento\Config\Model\ResourceModel\Config $resourceConfig
-     * @param \Extensions\RelevaTracking\Model\Api $api
+     * @param \Relevanz\Tracking\Model\Api $api
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
@@ -36,7 +36,7 @@ class KeyPost extends \Extensions\RelevaTracking\Controller\Adminhtml\Statistics
         \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \Magento\Config\Model\ResourceModel\Config $resourceConfig,
-        \Extensions\RelevaTracking\Model\Api $api
+        \Relevanz\Tracking\Model\Api $api
     ) {
         $this->_coreRegistry        =   $coreRegistry;
         $this->resultForwardFactory =   $resultForwardFactory;
@@ -61,13 +61,13 @@ class KeyPost extends \Extensions\RelevaTracking\Controller\Adminhtml\Statistics
                 if(isset($result->user_id) && ($clientId = $result->user_id)) {
                     $scope = ($storeId) ? \Magento\Store\Model\ScopeInterface::SCOPE_STORES : \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
                     $this->_resourceConfig->saveConfig(
-                        \Extensions\RelevaTracking\Helper\Admin\Data::XML_PATH_CLIENT_ID,
+                        \Relevanz\Tracking\Helper\Admin\Data::XML_PATH_CLIENT_ID,
                         $clientId,
                         $scope,
                         $storeId
                     );
                     $this->_resourceConfig->saveConfig(
-                        \Extensions\RelevaTracking\Helper\Admin\Data::XML_PATH_API_KEY,
+                        \Relevanz\Tracking\Helper\Admin\Data::XML_PATH_API_KEY,
                         $apiKey,
                         $scope,
                         $storeId

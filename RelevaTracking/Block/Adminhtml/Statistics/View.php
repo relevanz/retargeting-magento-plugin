@@ -7,7 +7,7 @@
  * Time: 6:11 PM
  */
 
-namespace Extensions\RelevaTracking\Block\Adminhtml\Statistics;
+namespace Relevanz\Tracking\Block\Adminhtml\Statistics;
 
 class View extends \Magento\Backend\Block\Widget{
 
@@ -18,20 +18,20 @@ class View extends \Magento\Backend\Block\Widget{
     protected $_adminHelper;
     protected $_api;
 
-    protected $_template = 'Extensions_RelevaTracking::statistics/view.phtml';
+    protected $_template = 'Relevanz_Tracking::statistics/view.phtml';
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Backend\Helper\Data $backendHelper
-     * @param \Extensions\RelevaTracking\Helper\Admin\Data $adminHelper
-     * @param \Extensions\RelevaTracking\Model\Api $api
+     * @param \Relevanz\Tracking\Helper\Admin\Data $adminHelper
+     * @param \Relevanz\Tracking\Model\Api $api
      * @param array $data
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Backend\Helper\Data $backendHelper,
-        \Extensions\RelevaTracking\Helper\Admin\Data $adminHelper,
-        \Extensions\RelevaTracking\Model\Api $api,
+        \Relevanz\Tracking\Helper\Admin\Data $adminHelper,
+        \Relevanz\Tracking\Model\Api $api,
         array $data = []
     ) {
         $this->_backendHelper = $backendHelper;

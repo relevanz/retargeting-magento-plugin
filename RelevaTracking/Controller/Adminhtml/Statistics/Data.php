@@ -6,19 +6,19 @@
  * Date: 6/26/17
  * Time: 11:35 AM
  */
-namespace Extensions\RelevaTracking\Controller\Adminhtml\Statistics;
+namespace Relevanz\Tracking\Controller\Adminhtml\Statistics;
 
 use Magento\Framework\Controller\ResultFactory;
 
-class Data extends \Extensions\RelevaTracking\Controller\Adminhtml\Statistics
+class Data extends \Relevanz\Tracking\Controller\Adminhtml\Statistics
 {
     /**
-     * @var \Extensions\RelevaTracking\Model\Api
+     * @var \Relevanz\Tracking\Model\Api
      */
     protected $_api;
 
     /**
-     * @var \Extensions\RelevaTracking\Helper\Admin\Data
+     * @var \Relevanz\Tracking\Helper\Admin\Data
      */
     protected $_helper;
 
@@ -27,16 +27,16 @@ class Data extends \Extensions\RelevaTracking\Controller\Adminhtml\Statistics
      * @param \Magento\Framework\Registry $coreRegistry
      * @param \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-     * @param \Extensions\RelevaTracking\Model\Api $api
-     * @param \Extensions\RelevaTracking\Helper\Admin\Data $helper
+     * @param \Relevanz\Tracking\Model\Api $api
+     * @param \Relevanz\Tracking\Helper\Admin\Data $helper
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Registry $coreRegistry,
         \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Extensions\RelevaTracking\Model\Api $api,
-        \Extensions\RelevaTracking\Helper\Admin\Data $helper
+        \Relevanz\Tracking\Model\Api $api,
+        \Relevanz\Tracking\Helper\Admin\Data $helper
     ) {
         $this->_coreRegistry        =   $coreRegistry;
         $this->resultForwardFactory =   $resultForwardFactory;

@@ -6,18 +6,18 @@
  * Date: 6/16/17
  * Time: 5:19 PM
  */
-namespace Extensions\RelevaTracking\Helper;
+namespace Relevanz\Tracking\Helper;
 
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
-    const XML_PATH_ENABLED      = 'extensions_relevatracking/settings/enabled';
-    const XML_PATH_CLIENT_ID    = 'extensions_relevatracking/settings/client_id';
-    const XML_PATH_API_KEY      = 'extensions_relevatracking/settings/api_key';
+    const XML_PATH_ENABLED      = 'relevanz_tracking/settings/enabled';
+    const XML_PATH_CLIENT_ID    = 'relevanz_tracking/settings/client_id';
+    const XML_PATH_API_KEY      = 'relevanz_tracking/settings/api_key';
 
-    const XML_PATH_TRACKING_FRONT_PAGE      = 'extensions_relevatracking/tracking/front_page_enabled';
-    const XML_PATH_TRACKING_FRONT_CATEGORY  = 'extensions_relevatracking/tracking/category_page_enabled';
-    const XML_PATH_TRACKING_FRONT_PRODUCT   = 'extensions_relevatracking/tracking/product_page_enabled';
-    const XML_PATH_TRACKING_SUCCESS_PAGE    = 'extensions_relevatracking/tracking/order_success_page_enabled';
+    const XML_PATH_TRACKING_FRONT_PAGE      = 'relevanz_tracking/tracking/front_page_enabled';
+    const XML_PATH_TRACKING_FRONT_CATEGORY  = 'relevanz_tracking/tracking/category_page_enabled';
+    const XML_PATH_TRACKING_FRONT_PRODUCT   = 'relevanz_tracking/tracking/product_page_enabled';
+    const XML_PATH_TRACKING_SUCCESS_PAGE    = 'relevanz_tracking/tracking/order_success_page_enabled';
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface

@@ -9,6 +9,6 @@
 
 \Magento\Framework\Component\ComponentRegistrar::register(
         \Magento\Framework\Component\ComponentRegistrar::MODULE,
-        'Extensions_RelevaTracking',
+        'Relevanz_Tracking',
         __DIR__
     );

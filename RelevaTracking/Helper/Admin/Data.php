@@ -6,12 +6,12 @@
  * Date: 6/26/17
  * Time: 5:56 PM
  */
-namespace Extensions\RelevaTracking\Helper\Admin;
+namespace Relevanz\Tracking\Helper\Admin;
 
 class Data extends \Magento\Framework\App\Helper\AbstractHelper{
 
-    const XML_PATH_CLIENT_ID    = 'extensions_relevatracking/settings/client_id';
-    const XML_PATH_API_KEY      = 'extensions_relevatracking/settings/api_key';
+    const XML_PATH_CLIENT_ID    = 'relevanz_tracking/settings/client_id';
+    const XML_PATH_API_KEY      = 'relevanz_tracking/settings/api_key';
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface

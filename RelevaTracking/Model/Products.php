@@ -7,7 +7,7 @@
  * Time: 10:41 AM
  */
 
-namespace Extensions\RelevaTracking\Model;
+namespace Relevanz\Tracking\Model;
 
 use Magento\Store\Model\Store;
 

@@ -2,8 +2,8 @@ define([
     "jquery",
     'mageUtils',
     "moment",
-    "extensions/relevatracking/chart",
-    "extensions/relevatracking/tablesorter",
+    "relevanz/tracking/chart",
+    "relevanz/tracking/tablesorter",
     'mage/validation'
 ], function($, $utils, $moment, $chart) {
     "use strict";

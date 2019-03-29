@@ -7,7 +7,7 @@
  * Time: 5:41 PM
  */
 
-namespace Extensions\RelevaTracking\Controller\Adminhtml;
+namespace Relevanz\Tracking\Controller\Adminhtml;
 
 /**
  * Statistics controller
@@ -59,7 +59,7 @@ abstract class Statistics extends \Magento\Backend\App\Action
     protected function _initAction()
     {
         $this->_view->loadLayout();
-        $this->_setActiveMenu('Extensions_RelevaTracking::statistics')->_addBreadcrumb(__('releva.nz Dashboard'), __('releva.nz Dashboard'));
+        $this->_setActiveMenu('Relevanz_Tracking::statistics')->_addBreadcrumb(__('releva.nz Dashboard'), __('releva.nz Dashboard'));
         return $this;
     }
 
@@ -70,6 +70,6 @@ abstract class Statistics extends \Magento\Backend\App\Action
      */
     protected function _isAllowed()
     {
-        return $this->_authorization->isAllowed('Extensions_RelevaTracking::statistics');
+        return $this->_authorization->isAllowed('Relevanz_Tracking::statistics');
     }
 }

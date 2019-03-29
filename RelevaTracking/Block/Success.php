@@ -11,9 +11,9 @@
  * tracking url example: https://d.hyj.mobi/convNetw?cid=CLIENT_ID&orderId=ORDER_ID&amount=ORDER_TOTAL&eventName=ARTILE_ID1,ARTILE_ID2,ARTILE_ID3&network=relevanz
  */
 
-namespace Extensions\RelevaTracking\Block;
+namespace Relevanz\Tracking\Block;
 
-class Success extends \Extensions\RelevaTracking\Block\AbstractTracking{
+class Success extends \Relevanz\Tracking\Block\AbstractTracking{
 
     const TRACKING_URL  =   'd.hyj.mobi';
     const URL_PATH      =   'convNetw';
@@ -24,13 +24,13 @@ class Success extends \Extensions\RelevaTracking\Block\AbstractTracking{
     protected $_checkoutSession;
 
     /**
-     * @param \Extensions\RelevaTracking\Helper\Data $helper
+     * @param \Relevanz\Tracking\Helper\Data $helper
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Checkout\Model\Session $checkoutSession
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param array $data
      */
-    public function __construct(\Extensions\RelevaTracking\Helper\Data $helper,
+    public function __construct(\Relevanz\Tracking\Helper\Data $helper,
                                 \Magento\Framework\Registry $registry,
                                 \Magento\Checkout\Model\Session $checkoutSession,
                                 \Magento\Framework\View\Element\Template\Context $context,

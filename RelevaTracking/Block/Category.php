@@ -11,9 +11,9 @@
  * tracking url example: https://pix.hyj.mobi/rt?t=d&action=c&cid=CLIENT_ID&id=CATEGORY_ID
  */
 
-namespace Extensions\RelevaTracking\Block;
+namespace Relevanz\Tracking\Block;
 
-class Category extends \Extensions\RelevaTracking\Block\AbstractTracking{
+class Category extends \Relevanz\Tracking\Block\AbstractTracking{
 
     /**
      * @return \Magento\Catalog\Model\Category

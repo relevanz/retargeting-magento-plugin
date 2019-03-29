@@ -3,7 +3,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="before.body.end">
-            <block class="Extensions\RelevaTracking\Block\Product" name="releva.tracking.init" template="Extensions_RelevaTracking::init.phtml" />
+            <block class="Relevanz\Tracking\Block\Product" name="releva.tracking.init" template="Relevanz_Tracking::init.phtml" />
         </referenceContainer>
     </body>
 </page>

@@ -2,6 +2,6 @@
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:Backend/etc/menu.xsd">
     <menu>
-        <add id="extensions_relevatracking::statistics" title="releva.nz Dashboard" module="Extensions_RelevaTracking" sortOrder="10" parent="Magento_Reports::report_marketing" action="extensions_relevatracking/statistics" resource="Extensions_RelevaTracking::statistics"/>
+        <add id="relevanz_tracking::statistics" title="releva.nz Dashboard" module="Relevanz_Tracking" sortOrder="10" parent="Magento_Reports::report_marketing" action="relevanz_tracking/statistics" resource="Relevanz_Tracking::statistics"/>
     </menu>
 </config>

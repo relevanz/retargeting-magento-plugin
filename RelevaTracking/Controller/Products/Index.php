@@ -7,7 +7,7 @@
  * Time: 10:04 AM
  */
 
-namespace Extensions\RelevaTracking\Controller\Products;
+namespace Relevanz\Tracking\Controller\Products;
 
 use Magento\Framework\Controller\ResultFactory;
 use Magento\CatalogInventory\Model\Stock;
@@ -15,7 +15,7 @@ use Magento\CatalogInventory\Model\Stock;
 class Index extends \Magento\Framework\App\Action\Action{
 
     /**
-     * @var \Extensions\RelevaTracking\Model\Products
+     * @var \Relevanz\Tracking\Model\Products
      */
     protected $_productsModel;
 
@@ -23,11 +23,11 @@ class Index extends \Magento\Framework\App\Action\Action{
   
     /**
      * @param \Magento\Framework\App\Action\Context $context
-     * @param \Extensions\JsonExport\Model\Products $productsModel
+     * @param \Relevanz\JsonExport\Model\Products $productsModel
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
-        \Extensions\RelevaTracking\Model\Products $productsModel
+        \Relevanz\Tracking\Model\Products $productsModel
     )
     {
         parent::__construct($context);
