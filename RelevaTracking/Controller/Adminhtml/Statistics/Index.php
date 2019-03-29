@@ -21,9 +21,9 @@ class Index extends \Extensions\RelevaTracking\Controller\Adminhtml\Statistics
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('Extensions_RelevaTracking::tastefinder');
-        $resultPage->getConfig()->getTitle()->prepend(__('Releva Dashboard'));
+        $resultPage->getConfig()->getTitle()->prepend(__('releva.nz Dashboard'));
         $resultPage->addBreadcrumb(__('Extensions'), __('Extensions'));
-        $resultPage->addBreadcrumb(__('Releva Dashboard'), __('Releva Dashboard'));
+        $resultPage->addBreadcrumb(__('Releva Dashboard'), __('releva.nz Dashboard'));
         return $resultPage;
     }
 }

@@ -59,7 +59,7 @@ abstract class Statistics extends \Magento\Backend\App\Action
     protected function _initAction()
     {
         $this->_view->loadLayout();
-        $this->_setActiveMenu('Extensions_RelevaTracking::statistics')->_addBreadcrumb(__('Releva Dashboard'), __('Releva Dashboard'));
+        $this->_setActiveMenu('Extensions_RelevaTracking::statistics')->_addBreadcrumb(__('releva.nz Dashboard'), __('releva.nz Dashboard'));
         return $this;
     }
 
