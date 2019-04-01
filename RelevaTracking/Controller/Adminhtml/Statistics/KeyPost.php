@@ -21,6 +21,8 @@ class KeyPost extends \Relevanz\Tracking\Controller\Adminhtml\Statistics
      * @var \Magento\Framework\App\Config\ConfigResource\ConfigInterface
      */
     protected $_resourceConfig;
+    
+    private $cacheTypeList;
 
     /**
      * @param \Magento\Backend\App\Action\Context $context
@@ -36,8 +38,10 @@ class KeyPost extends \Relevanz\Tracking\Controller\Adminhtml\Statistics
         \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \Magento\Config\Model\ResourceModel\Config $resourceConfig,
-        \Relevanz\Tracking\Model\Api $api
+        \Relevanz\Tracking\Model\Api $api,
+        \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList
     ) {
+        $this->cacheTypeList = $cacheTypeList;
         $this->_coreRegistry        =   $coreRegistry;
         $this->resultForwardFactory =   $resultForwardFactory;
         $this->resultPageFactory    =   $resultPageFactory;
@@ -61,18 +65,13 @@ class KeyPost extends \Relevanz\Tracking\Controller\Adminhtml\Statistics
                 if(isset($result->user_id) && ($clientId = $result->user_id)) {
                     $scope = ($storeId) ? \Magento\Store\Model\ScopeInterface::SCOPE_STORES : \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
                     $this->_resourceConfig->saveConfig(
-                        \Relevanz\Tracking\Helper\Admin\Data::XML_PATH_CLIENT_ID,
-                        $clientId,
-                        $scope,
-                        $storeId
-                    );
-                    $this->_resourceConfig->saveConfig(
                         \Relevanz\Tracking\Helper\Admin\Data::XML_PATH_API_KEY,
                         $apiKey,
                         $scope,
                         $storeId
                     );
                     $this->messageManager->addSuccess(__('You have successfully added your configuration!'));
+                    $this->cacheTypeList->invalidate(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
                 }
             } else {
                 $this->messageManager->addError(__($response->getMessage()));

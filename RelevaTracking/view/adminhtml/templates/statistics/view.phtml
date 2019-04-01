@@ -1,5 +1,12 @@
 <?php $isValidApiKey = $this->validateApiKey(); ?>
-<?php if(!$isValidApiKey): ?>
+<?php if(!$this->isStore()): ?>
+    <div class="messages">
+        <div class="message message-notice notice">
+            <div><?php echo __('Please select store first!!') ?></div>
+        </div>
+    </div>
+    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/RosnrIJ6W5U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<?php elseif(!$isValidApiKey): ?>
     <div>
         <div class="messages">
             <div id="<?php /* @escapeNotVerified */ echo $block->getSuffixId('submit_key_messages')?>" style="display: none;"></div>

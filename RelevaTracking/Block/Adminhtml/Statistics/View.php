@@ -39,6 +39,10 @@ class View extends \Magento\Backend\Block\Widget{
         $this->_api     =   $api;
         parent::__construct($context, $data);
     }
+    
+    public function isStore() {
+        return $this->_getStoreId() !== 0;
+    }
 
     /**
      * @return int

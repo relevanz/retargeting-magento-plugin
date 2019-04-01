@@ -17,6 +17,10 @@ class Api{
     protected $_verificationTimeOut  = 60;
     protected $_localeDate;
     protected $curlFactory;
+    
+    private $resourceConfig;
+    
+    private $request;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -24,10 +28,14 @@ class Api{
      * @param array $data
      */
     public function __construct(
+        \Magento\Framework\App\Config\ConfigResource\ConfigInterface $resourceConfig,
+        \Magento\Framework\App\RequestInterface $request,
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\HTTP\Adapter\CurlFactory $curlFactory,
         array $data = [])
     {
+        $this->resourceConfig = $resourceConfig;
+        $this->request = $request;
         $this->_localeDate  =   $context->getLocaleDate();
         $this->curlFactory  =   $curlFactory;
     }
@@ -63,7 +71,23 @@ class Api{
      */
     public function getUser($apiKey = null){
         $url = $this->_prepareUrl('user/get', array('apikey' => $apiKey));
-        return $this->_request($url);
+        $response = $this->_request($url);
+        if ($response->getStatus() === 'success') {
+            $result = json_decode($response->getResult());
+            if(isset($result->user_id) && ($clientId = $result->user_id)) {
+                $storeId = $this->request->getParam('store', 0);
+                $scope = ($storeId) ? \Magento\Store\Model\ScopeInterface::SCOPE_STORES : \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
+                $this->resourceConfig->saveConfig(
+                    \Relevanz\Tracking\Helper\Admin\Data::XML_PATH_CLIENT_ID,
+                    $clientId,
+                    $scope,
+                    $storeId
+                );
+            }
+        } else {
+            throw new \Exception($response->getMessage());
+        }
+        return $response;
     }
 
     /**
@@ -115,7 +139,7 @@ class Api{
                 ));
             }
             $curl->close();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $response->setData(
                 array(
                     'status' => 'error',
