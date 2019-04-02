@@ -9,21 +9,38 @@
 
 namespace Relevanz\Tracking\Controller\Adminhtml\Statistics;
 
-class Index extends \Relevanz\Tracking\Controller\Adminhtml\Statistics
+use Relevanz\Tracking\Controller\Adminhtml\Statistics;
+use Magento\Framework\View\Result\PageFactory;
+use Magento\Backend\App\Action\Context;
+
+class Index extends Statistics
 {
+    
     /**
-     * Statistics list.
+     * @var PageFactory
+     */
+    private $pageFactory;
+    
+    public function __construct(PageFactory $pageFactory, Context $context)
+    {
+        $this->pageFactory = $pageFactory;
+        parent::__construct($context);
+    }
+    
+    /**
+     * Statistics 
      *
      * @return \Magento\Backend\Model\View\Result\Page
      */
     public function execute()
     {
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
-        $resultPage = $this->resultPageFactory->create();
+        $resultPage = $this->pageFactory->create();
         $resultPage->setActiveMenu('Relevanz_Tracking::tastefinder');
         $resultPage->getConfig()->getTitle()->prepend(__('releva.nz Dashboard'));
         $resultPage->addBreadcrumb(__('relevan.nz'), __('relevan.nz'));
         $resultPage->addBreadcrumb(__('relevan.nz Dashboard'), __('releva.nz Dashboard'));
         return $resultPage;
     }
+    
 }

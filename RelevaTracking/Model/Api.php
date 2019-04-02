@@ -57,15 +57,6 @@ class Api{
     }
 
     /**
-     * @param string $date
-     * @return string
-     */
-    protected function _formatDate($date = null){
-        $scopeDate = $this->_localeDate->scopeDate(null, $date, false);
-        return date("Y-m-d", $scopeDate->getTimestamp());
-    }
-
-    /**
      * @param string $apiKey
      * @return bool|\Magento\Framework\DataObject
      */
@@ -89,20 +80,7 @@ class Api{
         }
         return $response;
     }
-
-    /**
-     * @param string $apiKey
-     * @param string $from
-     * @param string $to
-     * @return bool|\Magento\Framework\DataObject
-     */
-    public function getStatisticData($apiKey = null, $from = null, $to = null){
-        $from = ($from) ? $this->_formatDate($from) : null;
-        $to = ($to) ? $this->_formatDate($to) : null;
-        $url = $this->_prepareUrl('stats', array('apikey' => $apiKey, 'startdate' => $from, 'enddate' => $to));
-        return $this->_request($url);
-    }
-
+    
     /**
      * @param string $url
      * @return bool|\Magento\Framework\DataObject

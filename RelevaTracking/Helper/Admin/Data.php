@@ -8,37 +8,37 @@
  */
 namespace Relevanz\Tracking\Helper\Admin;
 
-class Data extends \Magento\Framework\App\Helper\AbstractHelper{
+use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Helper\Context;
+
+class Data extends AbstractHelper {
 
     const XML_PATH_CLIENT_ID    = 'relevanz_tracking/settings/client_id';
     const XML_PATH_API_KEY      = 'relevanz_tracking/settings/api_key';
 
     /**
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var ScopeConfigInterface
      */
-    protected $_scopeConfig;
+    protected $scopeConfig;
 
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
+     * @var StoreManagerInterface
      */
-    protected $_storeManager;
+    protected $storeManager;
 
     /**
-     * @var \Magento\Framework\App\ResourceConnection
+     * @param StoreManagerInterface $storeManager
+     * @param ScopeConfigInterface $scopeConfig
+     * @param Context $context
      */
-    protected $_resource;
-
-    /**
-     * @param \Magento\Framework\App\Helper\Context $context
-     * @param \Magento\Framework\App\ResourceConnection $resource
-     */
-    public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\App\ResourceConnection $resource
-    ) {
+    public function __construct(StoreManagerInterface $storeManager, ScopeConfigInterface $scopeConfig, Context $context)
+    {
+        $this->storeManager = $storeManager;
+        $this->scopeConfig = $scopeConfig;
         parent::__construct($context);
-        $this->_scopeConfig     = $this->scopeConfig;
-        $this->_resource        = $resource;
     }
 
     /**
@@ -46,30 +46,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper{
      * @return string
      */
     public function getApiKey($storeId = 0){
-
-        $scope      = ($storeId) ? \Magento\Store\Model\ScopeInterface::SCOPE_STORES : \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
-        $connection = $this->_resource->getConnection();
-        $tableName  = $connection->getTableName('core_config_data');
-
-        $select = $connection->select()->from(
-            $tableName,
-            ['api_key' => 'value']
-        )->where(
-            'path = ?',
-            self::XML_PATH_API_KEY
-        )->where(
-            'scope = ?',
-            $scope
-        )->where(
-            'scope_id = ?',
-            $storeId
+        return $this->scopeConfig->getValue(
+            self::XML_PATH_API_KEY, 
+            ScopeInterface::SCOPE_STORES,
+            $this->storeManager->getStore($storeId)
         );
-        $row = $connection->fetchRow($select);
-        return ($row && isset($row['api_key'])) ? $row['api_key'] : '';
-
-//        return $this->_scopeConfig->getValue(
-//            self::XML_PATH_API_KEY, \Magento\Store\Model\ScopeInterface::SCOPE_STORES,
-//            $this->_storeManager->getStore($storeId));
     }
 
 }

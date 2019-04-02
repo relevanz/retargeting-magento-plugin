@@ -8,46 +8,42 @@
  */
 namespace Relevanz\Tracking\Controller\Adminhtml\Statistics;
 
-use Magento\Framework\Controller\ResultFactory;
+use Relevanz\Tracking\Controller\Adminhtml\Statistics;
+use Relevanz\Tracking\Model\Api as RelevanzApi;
+use Magento\Framework\App\Cache\TypeListInterface;
+use Magento\Config\Model\ResourceModel\Config;
+use Magento\Backend\App\Action\Context;
 
-class KeyPost extends \Relevanz\Tracking\Controller\Adminhtml\Statistics
+class KeyPost extends Statistics
 {
     /**
-     * @var \Relevanz\Tracking\Model\Api
+     * @var RelevanzApi
      */
-    protected $_api;
+    private $relevanzApi;
 
     /**
      * @var \Magento\Framework\App\Config\ConfigResource\ConfigInterface
      */
-    protected $_resourceConfig;
+    private $resourceConfig;
     
     private $cacheTypeList;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\Registry $coreRegistry
-     * @param \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-     * @param \Magento\Config\Model\ResourceModel\Config $resourceConfig
-     * @param \Relevanz\Tracking\Model\Api $api
+     * @param RelevanzApi $relevanzApi
+     * @param Config $resourceConfig
+     * @paran TypeListInterface $cacheTypeList
+     * @param Context $context
      */
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\Registry $coreRegistry,
-        \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Magento\Config\Model\ResourceModel\Config $resourceConfig,
-        \Relevanz\Tracking\Model\Api $api,
-        \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList
+        RelevanzApi $relevanzApi,
+        Config $resourceConfig,
+        TypeListInterface $cacheTypeList,
+        Context $context
     ) {
         $this->cacheTypeList = $cacheTypeList;
-        $this->_coreRegistry        =   $coreRegistry;
-        $this->resultForwardFactory =   $resultForwardFactory;
-        $this->resultPageFactory    =   $resultPageFactory;
-        parent::__construct($context, $coreRegistry, $resultForwardFactory, $resultPageFactory);
-        $this->_api             =   $api;
-        $this->_resourceConfig  =   $resourceConfig;
+        $this->relevanzApi = $relevanzApi;
+        $this->resourceConfig = $resourceConfig;
+        parent::__construct($context);
     }
 
     /**
@@ -59,12 +55,12 @@ class KeyPost extends \Relevanz\Tracking\Controller\Adminhtml\Statistics
         $apiKey     =   $this->getRequest()->getPostValue('api_key');
         $resultRedirect = $this->resultRedirectFactory->create();
         try {
-            $response   =   $this->_api->getUser($apiKey);
+            $response   =   $this->relevanzApi->getUser($apiKey);
             if ($response->getStatus() == 'success') {
                 $result = json_decode($response->getResult());
                 if(isset($result->user_id) && ($clientId = $result->user_id)) {
                     $scope = ($storeId) ? \Magento\Store\Model\ScopeInterface::SCOPE_STORES : \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
-                    $this->_resourceConfig->saveConfig(
+                    $this->resourceConfig->saveConfig(
                         \Relevanz\Tracking\Helper\Admin\Data::XML_PATH_API_KEY,
                         $apiKey,
                         $scope,

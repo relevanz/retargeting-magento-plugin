@@ -24,13 +24,15 @@
                         <input type="text" data-validate="{required:true}" id="<?php /* @escapeNotVerified */ echo $block->getSuffixId('submit_key_input')?>" class="admin__control-text" name="api_key"/>
                         <input name="form_key" type="hidden" value="<?php /* @escapeNotVerified */ echo $block->getFormKey() ?>" />
                     </div>
-                    &nbsp;&nbsp;<?php echo $block->getSubmitButtonHtml() ?>
+                    <button type="submit" title="Submit" class="action submit primary">
+                        <span>Submit</span>
+                    </button>
                 </div>
             </fieldset>
         </form>
         <div class="messages">
             <div class="message message-notice notice">
-                <div><?php echo __("Not yet registered? <a href='%1' target='%2'>Now catch up.</a>", 'http://releva.nz', '_blank') ?></div>
+                <div><?php echo __("Not yet registered? <a href='%1' target='%2'>Now catch up.</a>", 'https://releva.nz', '_blank') ?></div>
             </div>
         </div>
     </div>

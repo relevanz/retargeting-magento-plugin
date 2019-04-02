@@ -9,38 +9,37 @@
 
 namespace Relevanz\Tracking\Block\Adminhtml\Statistics;
 
-class View extends \Magento\Backend\Block\Widget{
+use Relevanz\Tracking\Helper\Admin\Data as Helper;
+use Relevanz\Tracking\Model\Api as RelevanzApi;
+use Magento\Backend\Block\Template\Context;
+use Magento\Backend\Block\Widget;
 
-    protected $_backendHelper;
-    protected $_backendSession;
-    protected $_timezoneInterface;
-    protected $_datetime;
-    protected $_adminHelper;
-    protected $_api;
+class View extends Widget {
+
+    private $helper;
+    
+    private $relevanzApi;
 
     protected $_template = 'Relevanz_Tracking::statistics/view.phtml';
 
     /**
-     * @param \Magento\Backend\Block\Template\Context $context
-     * @param \Magento\Backend\Helper\Data $backendHelper
-     * @param \Relevanz\Tracking\Helper\Admin\Data $adminHelper
-     * @param \Relevanz\Tracking\Model\Api $api
+     * @param Helper $helper
+     * @param RelevanzApi $relevanzApi
+     * @param Context $context
      * @param array $data
      */
-    public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \Magento\Backend\Helper\Data $backendHelper,
-        \Relevanz\Tracking\Helper\Admin\Data $adminHelper,
-        \Relevanz\Tracking\Model\Api $api,
-        array $data = []
-    ) {
-        $this->_backendHelper = $backendHelper;
-        $this->_adminHelper = $adminHelper;
-        $this->_api     =   $api;
+    public function __construct(Helper $helper, RelevanzApi $relevanzApi, Context $context, array $data = [])
+    {
+        $this->helper = $helper;
+        $this->relevanzApi = $relevanzApi;
         parent::__construct($context, $data);
     }
     
-    public function isStore() {
+    /**
+     * @return bool
+     */
+    public function isStore()
+    {
         return $this->_getStoreId() !== 0;
     }
 
@@ -53,7 +52,7 @@ class View extends \Magento\Backend\Block\Widget{
     }
     
     public function getApiKey($storeId = 0){
-        return $this->_adminHelper->getApiKey($this->_getStoreId());
+        return $this->helper->getApiKey($this->_getStoreId());
     }
 
     /**
@@ -61,67 +60,17 @@ class View extends \Magento\Backend\Block\Widget{
      */
     public function validateApiKey()
     {
-        $apiKey = $this->_adminHelper->getApiKey($this->_getStoreId());
+        $apiKey = $this->getApiKey();
         if(!$apiKey){
             return false;
         }
-        $validateApiKey = $this->_api->getUser($apiKey);
+        $validateApiKey = $this->relevanzApi->getUser($apiKey);
         if($validateApiKey->getStatus() != 'success'){
             return false;
         }
         return true;
     }
-
-    /**
-     * Get date format according the locale
-     *
-     * @return string
-     */
-    public function getDateFormat()
-    {
-        return $this->_localeDate->getDateFormatWithLongYear();
-    }
-
-    /**
-     * @return string
-     */
-    public function getReportTo()
-    {
-        $date = new \DateTime();
-        $value = $this->_localeDate->formatDateTime(
-            $date,
-            \IntlDateFormatter::SHORT,
-            \IntlDateFormatter::NONE
-        );
-        return $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getReportFrom()
-    {
-        $date   = new \DateTime();
-        $date->modify('-1 month');
-        $value  = $this->_localeDate->formatDateTime(
-            $date,
-            \IntlDateFormatter::SHORT,
-            \IntlDateFormatter::NONE
-        );
-        return $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDataUrl(){
-        $params = array();
-        if($storeId = $this->_getStoreId()) {
-            $params['store'] = $storeId;
-        }
-        return $this->getUrl('*/*/data', $params);
-    }
-
+    
     /**
      * Api Key Post Url
      * @return string
@@ -132,78 +81,6 @@ class View extends \Magento\Backend\Block\Widget{
             $params['store'] = $storeId;
         }
         return $this->getUrl('*/*/keyPost', $params);
-    }
-
-    /**
-     * @return string
-     */
-    public function getKeyValidationUrl(){
-        $params = array();
-        if($storeId = $this->_getStoreId()) {
-            $params['store'] = $storeId;
-        }
-        return $this->getUrl('*/*/keyValidation', $params);
-    }
-
-    /**
-     * @return $this
-     */
-    protected function _beforeToHtml()
-    {
-        $this->_prepareFilterButtons();
-        return parent::_beforeToHtml();
-    }
-
-    /**
-     * Return refresh button html
-     * @codeCoverageIgnore
-     *
-     * @return string
-     */
-    public function getRefreshButtonHtml()
-    {
-        return $this->getChildHtml('refresh_button');
-    }
-
-    /**
-     * Return submit api key button html
-     * @codeCoverageIgnore
-     *
-     * @return string
-     */
-    public function getSubmitButtonHtml()
-    {
-        return $this->getChildHtml('submit_key_button');
-    }
-
-    /**
-     * Retrieve grid javascript object name
-     *
-     * @return string
-     */
-    public function getJsObjectName()
-    {
-        return preg_replace("~[^a-z0-9_]*~i", '', $this->getId()) . 'JsObject';
-    }
-
-    /**
-     * Prepare buttons
-     *
-     * @return void
-     */
-    protected function _prepareFilterButtons()
-    {
-        $this->addChild(
-            'refresh_button',
-            'Magento\Backend\Block\Widget\Button',
-            ['label' => __('Refresh'), 'class' => 'task', 'id' => $this->getSuffixId('refresh_statistics')]
-        );
-
-        $this->addChild(
-            'submit_key_button',
-            'Magento\Backend\Block\Widget\Button',
-            ['label' => __('Submit'), 'class' => 'task', 'id' => $this->getSuffixId('submit_key_button')]
-        );
     }
 
 }
