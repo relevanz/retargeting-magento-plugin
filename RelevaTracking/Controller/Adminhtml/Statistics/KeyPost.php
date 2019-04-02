@@ -67,7 +67,7 @@ class KeyPost extends Statistics
                         $storeId
                     );
                     $this->messageManager->addSuccess(__('You have successfully added your configuration!'));
-                    $this->cacheTypeList->invalidate(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
+                    $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
                 }
             } else {
                 $this->messageManager->addError(__($response->getMessage()));
