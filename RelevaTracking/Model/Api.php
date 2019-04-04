@@ -69,7 +69,7 @@ class Api{
                 $storeId = $this->request->getParam('store', 0);
                 $scope = ($storeId) ? \Magento\Store\Model\ScopeInterface::SCOPE_STORES : \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
                 $this->resourceConfig->saveConfig(
-                    \Relevanz\Tracking\Helper\Admin\Data::XML_PATH_CLIENT_ID,
+                    \Relevanz\Tracking\Helper\Data::XML_PATH_CLIENT_ID,
                     $clientId,
                     $scope,
                     $storeId

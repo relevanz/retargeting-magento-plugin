@@ -61,7 +61,7 @@ class KeyPost extends Statistics
                 if(isset($result->user_id) && ($clientId = $result->user_id)) {
                     $scope = ($storeId) ? \Magento\Store\Model\ScopeInterface::SCOPE_STORES : \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
                     $this->resourceConfig->saveConfig(
-                        \Relevanz\Tracking\Helper\Admin\Data::XML_PATH_API_KEY,
+                        \Relevanz\Tracking\Helper\Data::XML_PATH_API_KEY,
                         $apiKey,
                         $scope,
                         $storeId

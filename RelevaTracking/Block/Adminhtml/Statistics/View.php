@@ -9,7 +9,7 @@
 
 namespace Relevanz\Tracking\Block\Adminhtml\Statistics;
 
-use Relevanz\Tracking\Helper\Admin\Data as Helper;
+use Relevanz\Tracking\Helper\Data as Helper;
 use Relevanz\Tracking\Model\Api as RelevanzApi;
 use Magento\Backend\Block\Template\Context;
 use Magento\Backend\Block\Widget;
@@ -18,6 +18,9 @@ class View extends Widget {
 
     private $helper;
     
+    /**
+     * @var RelevanzApi
+     */
     private $relevanzApi;
 
     protected $_template = 'Relevanz_Tracking::statistics/view.phtml';
@@ -51,8 +54,9 @@ class View extends Widget {
         return (int)$this->getRequest()->getParam('store', 0);
     }
     
-    public function getApiKey($storeId = 0){
-        return $this->helper->getApiKey($this->_getStoreId());
+    public function getApiKey()
+    {
+        return $this->helper->getApiKey();
     }
 
     /**
@@ -64,11 +68,15 @@ class View extends Widget {
         if(!$apiKey){
             return false;
         }
-        $validateApiKey = $this->relevanzApi->getUser($apiKey);
-        if($validateApiKey->getStatus() != 'success'){
+        try {
+            $validateApiKey = $this->relevanzApi->getUser($apiKey);
+            if($validateApiKey->getStatus() != 'success'){
+                return false;
+            }
+            return true;
+        } catch (\Exception $exception) {
             return false;
         }
-        return true;
     }
     
     /**
