@@ -66,11 +66,14 @@ class Api{
      * @return bool|\Magento\Framework\DataObject
      */
     public function getUser($apiKey = null){
+        $productExportUrl = str_replace(urlencode(':auth'), ':auth', $this->url->getUrl('releva.nz/products', [
+            '_nosid' => true,
+            'type' => 'csv',
+            'auth' => ':auth',
+        ]));
         $url = $this->_prepareUrl('user/get', array(
             'apikey' => $apiKey,
-            'product-export-url' => $this->url->getUrl('releva.nz/products', [
-                '_nosid' => true,
-            ]),
+            'product-export-url' => $productExportUrl,
         ));
         $response = $this->_request($url);
         if ($response->getStatus() === 'success') {
