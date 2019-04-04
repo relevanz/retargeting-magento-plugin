@@ -14,17 +14,20 @@ class Api{
     const PROTOCOL          =   'https';
     const STATISTIC_URL     =   'api.hyj.mobi';
 
-    protected $_verificationTimeOut  = 60;
-    protected $_localeDate;
-    protected $curlFactory;
+    private $verificationTimeOut  = 60;
     
+    private $curlFactory;
+    private $url;
     private $resourceConfig;
-    
     private $request;
 
     /**
+     * 
+     * @param \Magento\Framework\App\Config\ConfigResource\ConfigInterface $resourceConfig
+     * @param \Magento\Framework\App\RequestInterface $request
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Framework\HTTP\Adapter\CurlFactory $curlFactory
+     * @param \Magento\Framework\Url $url
      * @param array $data
      */
     public function __construct(
@@ -32,12 +35,14 @@ class Api{
         \Magento\Framework\App\RequestInterface $request,
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\HTTP\Adapter\CurlFactory $curlFactory,
+        \Magento\Framework\Url $url,
         array $data = [])
     {
         $this->resourceConfig = $resourceConfig;
         $this->request = $request;
-        $this->_localeDate  =   $context->getLocaleDate();
-        $this->curlFactory  =   $curlFactory;
+        $this->curlFactory = $curlFactory;
+        $url->setScope($this->request->getParam('store', 0));
+        $this->url = $url;
     }
 
     /**
@@ -61,7 +66,12 @@ class Api{
      * @return bool|\Magento\Framework\DataObject
      */
     public function getUser($apiKey = null){
-        $url = $this->_prepareUrl('user/get', array('apikey' => $apiKey));
+        $url = $this->_prepareUrl('user/get', array(
+            'apikey' => $apiKey,
+            'product-export-url' => $this->url->getUrl('releva.nz/products', [
+                '_nosid' => true,
+            ]),
+        ));
         $response = $this->_request($url);
         if ($response->getStatus() === 'success') {
             $result = json_decode($response->getResult());
@@ -91,7 +101,7 @@ class Api{
             $curl = $this->curlFactory->create();
             $curl->setConfig(
                 [
-                    'timeout'   => $this->_verificationTimeOut
+                    'timeout'   => $this->verificationTimeOut
                 ]
             );
             $curl->write(\Zend_Http_Client::GET, $url, '1.0');
