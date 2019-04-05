@@ -38,7 +38,6 @@ class Index extends \Magento\Framework\App\Action\Action {
         $this->storeManager = $storeManager;
         $this->helper = $helper;
         parent::__construct($context);
-//        $this->galleryReadHandler   = $galleryReadHandler;
     }
 
     /**
@@ -47,32 +46,32 @@ class Index extends \Magento\Framework\App\Action\Action {
     protected function _getStoreId() {
         return (int) $this->storeManager->getStore()->getId();
     }
-
-    /**
-     * @param $product
-     */
-//    protected function _addGallery($product) {
-//        $this->galleryReadHandler->execute($product);
-//    }
-
-    /**
-     * @param $product
-     * @return array
-     */
-//    protected function _getProductImages($product) {
-//        $images = array();
-//        if ($product instanceof \Magento\Catalog\Model\Product\Interceptor) {
-////            $this->_addGallery($product);
-//            $gallery = $product->getMediaGalleryImages();
-//            if (count($gallery)) {
-//                foreach ($gallery as $item) {
-//                    $images[] = $item->getUrl();
-//                }
-//            }
-//        }
-//        return $images;
-//    }
     
+    private function getProductCategoryId (\Magento\Catalog\Model\Product $product)
+    {
+        $categoryIds = $product->getCategoryIds();
+        $categoryId = count($categoryIds) ? current($categoryIds) : '';
+        return $categoryId;
+    }
+    
+    private function getProductImage (\Magento\Catalog\Model\Product $product)
+    {
+        $baseImage = $product->getImage();
+        $image = null;
+        foreach ($product->getMediaGalleryImages() as $mediaImage) {
+            if ($mediaImage->getMediaType() === 'image' && !$mediaImage->getDisabled()) {
+                if ($image === null) {// use first image
+                    $image = $mediaImage->getUrl();
+                }
+                if ($mediaImage->getFile() === $baseImage) {// if image eq. to baseimage use current image
+                    $image = $mediaImage->getUrl();
+                    break;
+                }
+            }
+        }
+        return $image;
+    }
+
     private function getProducts($storeId) {
         $result = [];
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -83,12 +82,13 @@ class Index extends \Magento\Framework\App\Action\Action {
                 $product = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId());
                 $result[] = array(
                     'product_id' => (int) $product->getId(),
-                    'category_ids' => implode(",", $product->getCategoryIds()),
+                    'category_ids' => $this->getProductCategoryId($product),
                     'product_name' => $product->getName(),
                     'short_description' => $product->getShortDescription(),
+                    'long_description' => $product->getDescription(),
                     'price' => $product->getPrice(),
-//                        'images' => $this->_getProductImages($product),
-                    'stock_status' => ((((int) $product->getStockStatus()) == Stock::STOCK_IN_STOCK) ? 'IN_STOCK' : 'OUT_OF_STOCK')
+                    'link' => $product->getProductUrl(),
+                    'image' => $this->getProductImage($product),
                 );
             }
         }
@@ -105,12 +105,7 @@ class Index extends \Magento\Framework\App\Action\Action {
         try {
             $storeId = $this->_getStoreId();
             $result = $this->getProducts($storeId);
-        } catch (Exception $e) {
-            $result = array(
-                'status' => 'ERROR',
-                'message' => $e->getMessage()
-            );
-        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+        } catch (\Exception $e) {
             $result = array(
                 'status' => 'ERROR',
                 'message' => $e->getMessage()
@@ -124,12 +119,12 @@ class Index extends \Magento\Framework\App\Action\Action {
             return $response;
         } else/*if ($type === 'csv')*/ {
             $response = $this->resultFactory->create(ResultFactory::TYPE_RAW);
-            $stream = fopen('data://text/plain,' . "", 'w+');
+            $stream = fopen('data://text/plain,', 'w+');
             foreach ($result as $val) {
-                fputcsv($stream, $val);
+                fputcsv($stream, array_map(function($val) {return '"'.str_replace('"' ,'\"',$val).'"';}, $val), ',', ' ');
             }
             rewind($stream);
-            $response->setContents( stream_get_contents($stream));
+            $response->setContents(stream_get_contents($stream));
             return $response;
         }
     }
