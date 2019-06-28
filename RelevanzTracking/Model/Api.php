@@ -24,7 +24,6 @@ class Api{
     /**
      * 
      * @param \Magento\Framework\App\Config\ConfigResource\ConfigInterface $resourceConfig
-     * @param \Magento\Framework\App\RequestInterface $request
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Framework\HTTP\Adapter\CurlFactory $curlFactory
      * @param \Magento\Framework\Url $url
@@ -32,14 +31,13 @@ class Api{
      */
     public function __construct(
         \Magento\Framework\App\Config\ConfigResource\ConfigInterface $resourceConfig,
-        \Magento\Framework\App\RequestInterface $request,
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\HTTP\Adapter\CurlFactory $curlFactory,
         \Magento\Framework\Url $url,
         array $data = [])
     {
         $this->resourceConfig = $resourceConfig;
-        $this->request = $request;
+        $this->request = $context->getRequest();
         $this->curlFactory = $curlFactory;
         $url->setScope($this->request->getParam('store', 0));
         $this->url = $url;

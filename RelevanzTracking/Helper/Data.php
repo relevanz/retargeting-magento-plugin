@@ -29,13 +29,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     
     public function __construct(
         \Magento\Framework\App\State $state,
-        \Magento\Framework\App\RequestInterface $request,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\App\Helper\Context $context
     ) {
         $this->storeManager = $storeManager;
         $this->state = $state;
-        $this->request = $request;
+        $this->request = $context->getRequest();
         parent::__construct($context);
     }
     
