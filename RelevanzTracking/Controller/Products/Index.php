@@ -121,7 +121,7 @@ class Index extends \Magento\Framework\App\Action\Action {
             $response = $this->resultFactory->create(ResultFactory::TYPE_RAW);
             $stream = fopen('data://text/plain,', 'w+');
             foreach ($result as $val) {
-                fputcsv($stream, array_map(function($val) {return '"'.str_replace('"' ,'\"',$val).'"';}, $val), ',', ' ');
+                fputcsv($stream, $val, ',', '"');
             }
             rewind($stream);
             $response->setContents(stream_get_contents($stream));
