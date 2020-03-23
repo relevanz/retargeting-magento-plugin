@@ -19,8 +19,8 @@ In order to install the module via composer run one of the following commands in
 * **composer require relevanz/retargeting-magento2-plugin** to install the released version compatible with OXID eShop Compilation 6.*
 * **composer require relevanz/retargeting-magento2-plugin:dev-master** to install the latest unreleased version from github
 
-After execute in same folder:
-    $ bin/magento setup:upgrade
+After execute in same folder:  
+    **bin/magento setup:upgrade**
 
 ## Alternative Installation
 
