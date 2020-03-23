@@ -23,7 +23,7 @@ After execute in same folder:
 
 ## Alternative Installation
 
-copy all files from this repository to ./magentoRoot/app/code/Relevanz/Tracking
+Copy all files from this repository to ./magentoRoot/app/code/Relevanz/Tracking
 
-run the following command in commandline in your shop base directory  
-    $ bin/magento setup:upgrade
+Run the following command in commandline in your shop base directory  
+    **bin/magento setup:upgrade**
