@@ -17,7 +17,8 @@ The releva.nz plugin for OXID converts visitors into buyers, even when they alre
 In order to install the module via composer run one of the following commands in commandline in your shop base directory 
 (where the shop's composer.json file resides).
 * **composer require relevanz/retargeting-magento2-plugin** to install the released version compatible with OXID eShop Compilation 6.*
-* **composer require relevanz/retargeting-magento2-plugin:dev-master** to install the latest unreleased version from github  
+* **composer require relevanz/retargeting-magento2-plugin:dev-master** to install the latest unreleased version from github
+
 After execute in same folder:
     $ bin/magento setup:upgrade
 
