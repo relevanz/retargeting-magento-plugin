@@ -10,10 +10,6 @@ namespace Relevanz\Tracking\Block;
 
 class AbstractTracking extends \Magento\Framework\View\Element\Template{
 
-    const PROTOCOL      =   'https';
-    const TRACKING_URL  =   'pix.hyj.mobi';
-    const URL_PATH      =   'rt';
-
     protected $_clientId;
     protected $_scriptDefaultParams = array(
         'async' => 'true'
@@ -64,7 +60,7 @@ class AbstractTracking extends \Magento\Framework\View\Element\Template{
      * @return string
      */
     protected function _prepareScriptUrl($params = array()){
-        $url = \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_TRACKER_URL;//@todo conv-url
+        $url = \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_TRACKER_URL;
         if(!empty($params)){
             $url .= '?' . http_build_query($params);
         }

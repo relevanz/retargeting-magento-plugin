@@ -76,4 +76,16 @@ class Success extends \Relevanz\Tracking\Block\AbstractTracking{
         return $params;
     }
 
+    /**
+     * @param array $params
+     * @return string
+     */
+    protected function _prepareScriptUrl($params = array()){
+        $url = \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_CONV_URL;
+        if(!empty($params)){
+            $url .= '?' . http_build_query($params);
+        }
+        return $url;
+    }
+    
 }
