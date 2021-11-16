@@ -3,15 +3,12 @@ namespace Relevanz\Tracking\Model\Config\Backend;
 
 class ApiKey extends \Magento\Framework\App\Config\Value {
     
-    private $relevanzApi;
-    
     /**
      * @var \Magento\Framework\Message\ManagerInterface
      */
     private $messageManager;
 
     public function __construct(
-        \Relevanz\Tracking\Model\Api $relevanzApi,
         \Magento\Framework\Message\ManagerInterface $messageManager,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
@@ -21,7 +18,6 @@ class ApiKey extends \Magento\Framework\App\Config\Value {
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-        $this->relevanzApi = $relevanzApi;
         $this->messageManager = $messageManager;
         parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
     }
@@ -29,9 +25,9 @@ class ApiKey extends \Magento\Framework\App\Config\Value {
     public function beforeSave()
     {
         try {
-            $this->relevanzApi->getUser($this->getValue());
+            \Releva\Retargeting\Base\RelevanzApi::verifyApiKey($this->getValue());//@todo add info-url
         } catch (\Exception $exception) {
-            $this->messageManager->addError(__($exception->getMessage()));
+            $this->messageManager->addError(__($exception->getMessage()));//@todo relevanz-exceptions, same like in KeyPost class
         }
         parent::beforeSave();
     }

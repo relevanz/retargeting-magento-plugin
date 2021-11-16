@@ -1,12 +1,10 @@
-<?php $isValidApiKey = $this->validateApiKey(); ?>
 <?php if(!$this->isStore()): ?>
     <div class="messages">
         <div class="message message-notice notice">
             <div><?php echo __('Please select store first!!') ?></div>
         </div>
     </div>
-    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/RosnrIJ6W5U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-<?php elseif(!$isValidApiKey): ?>
+<?php elseif(!$this->validateApiKey()): ?>
     <div>
         <div class="messages">
             <div id="<?php /* @escapeNotVerified */ echo $block->getSuffixId('submit_key_messages')?>" style="display: none;"></div>
@@ -30,12 +28,6 @@
                 </div>
             </fieldset>
         </form>
-        <div class="messages">
-            <div class="message message-notice notice">
-                <div><?php echo __("Not yet registered? <a href='%1' target='%2'>Now catch up.</a>", 'https://releva.nz', '_blank') ?></div>
-            </div>
-        </div>
     </div>
-<?php else: ?>
-	<iframe src="https://customer.releva.nz/?apikey=<?php echo $this->getApiKey();?>" style="width: 100%; min-height: 450px; border: none;" id="tracking"></iframe>
 <?php endif; ?>
+<iframe src="<?php echo $this->getIframeUrl();?>" style="width: 100%; min-height: 450px; border: none;" id="tracking"></iframe>

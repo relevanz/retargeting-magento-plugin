@@ -10,7 +10,6 @@
 namespace Relevanz\Tracking\Block\Adminhtml\Statistics;
 
 use Relevanz\Tracking\Helper\Data as Helper;
-use Relevanz\Tracking\Model\Api as RelevanzApi;
 use Magento\Backend\Block\Template\Context;
 use Magento\Backend\Block\Widget;
 
@@ -18,23 +17,16 @@ class View extends Widget {
 
     private $helper;
     
-    /**
-     * @var RelevanzApi
-     */
-    private $relevanzApi;
-
     protected $_template = 'Relevanz_Tracking::statistics/view.phtml';
 
     /**
      * @param Helper $helper
-     * @param RelevanzApi $relevanzApi
      * @param Context $context
      * @param array $data
      */
-    public function __construct(Helper $helper, RelevanzApi $relevanzApi, Context $context, array $data = [])
+    public function __construct(Helper $helper, Context $context, array $data = [])
     {
         $this->helper = $helper;
-        $this->relevanzApi = $relevanzApi;
         parent::__construct($context, $data);
     }
     
@@ -58,23 +50,24 @@ class View extends Widget {
     {
         return $this->helper->getApiKey();
     }
+    
+    public function getIframeUrl()
+    {
+        return $this->isStore() && $this->validateApiKey()
+            ? \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_STATS_FRAME.$this->helper->getApiKey()
+            : 'https://releva.nz'
+        ;
+    }
 
     /**
      * @return bool
      */
     public function validateApiKey()
     {
-        $apiKey = $this->getApiKey();
-        if(!$apiKey){
-            return false;
-        }
         try {
-            $validateApiKey = $this->relevanzApi->getUser($apiKey);
-            if($validateApiKey->getStatus() != 'success'){
-                return false;
-            }
+            \Releva\Retargeting\Base\RelevanzApi::verifyApiKey($this->getApiKey());
             return true;
-        } catch (\Exception $exception) {
+        } catch (\Exception $ex) {
             return false;
         }
     }

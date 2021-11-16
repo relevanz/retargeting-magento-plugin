@@ -64,7 +64,7 @@ class AbstractTracking extends \Magento\Framework\View\Element\Template{
      * @return string
      */
     protected function _prepareScriptUrl($params = array()){
-        $url = static::PROTOCOL . "://" . static::TRACKING_URL . '/' . static::URL_PATH;
+        $url = \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_TRACKER_URL;//@todo conv-url
         if(!empty($params)){
             $url .= '?' . http_build_query($params);
         }

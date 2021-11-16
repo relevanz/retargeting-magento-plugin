@@ -3,6 +3,7 @@
     "description": "releva.nz Tracking",
     "require": {
         "php": "^5.5|^5.6|^7",
+        "relevanz/retargeting-base-lib": "*",
         "magento/magento-composer-installer": "*"
     },
     "type": "magento2-module",
