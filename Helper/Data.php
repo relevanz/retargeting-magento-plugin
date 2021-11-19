@@ -29,12 +29,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     
     private $messageManager;
     
+    private $resourceConfig;
+    
     public function __construct(
         \Magento\Framework\App\State $state,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\Message\ManagerInterface $messageManager
+        \Magento\Framework\Message\ManagerInterface $messageManager,
+        \Magento\Config\Model\ResourceModel\Config $resourceConfig
     ) {
+        $this->resourceConfig = $resourceConfig;
         $this->storeManager = $storeManager;
         $this->messageManager = $messageManager;
         $this->state = $state;
@@ -122,10 +126,15 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function verifyApiKeyAndDisplayErrors (string $apiKey) :? \Releva\Retargeting\Base\Credentials
     {
         try {
-            //@todo save to config?
             $credentials = \Releva\Retargeting\Base\RelevanzApi::verifyApiKey($apiKey, [
                 'callback-url' => $this->getShopInfo()['callbacks']['callback']['url'],
             ]);
+            $this->resourceConfig->saveConfig(
+                self::XML_PATH_CLIENT_ID,
+                $credentials->getUserId(),
+                $this->getStoreId() ? \Magento\Store\Model\ScopeInterface::SCOPE_STORES : \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+                $this->getStoreId()
+            );
             return $credentials;
         } catch (\Releva\Retargeting\Base\Exception\RelevanzException $exception) {
             $this->messageManager->addError(vsprintf($exception->getMessage(), $exception->getSprintfArgs()));
