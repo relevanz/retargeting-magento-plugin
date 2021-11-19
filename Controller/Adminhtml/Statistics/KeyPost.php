@@ -22,6 +22,8 @@ class KeyPost extends Statistics
     private $resourceConfig;
     
     private $cacheTypeList;
+    
+    private $dataHelper;
 
     /**
      * @param Config $resourceConfig
@@ -29,10 +31,12 @@ class KeyPost extends Statistics
      * @param Context $context
      */
     public function __construct(
+        \Relevanz\Tracking\Helper\Data $dataHelper,
         Config $resourceConfig,
         TypeListInterface $cacheTypeList,
         Context $context
     ) {
+        $this->dataHelper = $dataHelper;
         $this->cacheTypeList = $cacheTypeList;
         $this->resourceConfig = $resourceConfig;
         parent::__construct($context);
@@ -48,7 +52,9 @@ class KeyPost extends Statistics
         $resultRedirect = $this->resultRedirectFactory->create();
         try {
             /*$clientId = *///@todo save to config?
-            \Releva\Retargeting\Base\RelevanzApi::verifyApiKey($apiKey);//@todo add info-url, same stuff like in ApiKey class
+            \Releva\Retargeting\Base\RelevanzApi::verifyApiKey($apiKey, [
+                'callback-url' => $this->dataHelper->getShopInfo()['callbacks']['callback']['url'],
+            ]);
             $scope = ($storeId) ? \Magento\Store\Model\ScopeInterface::SCOPE_STORES : \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
             $this->resourceConfig->saveConfig(\Relevanz\Tracking\Helper\Data::XML_PATH_API_KEY, $apiKey, $scope, $storeId);
             $this->messageManager->addSuccess(__('You have successfully added your configuration!'));

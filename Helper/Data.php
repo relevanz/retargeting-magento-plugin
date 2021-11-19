@@ -38,6 +38,39 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         parent::__construct($context);
     }
     
+    public function getShopInfo() : array
+    {
+        $baseUrl = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
+        $shopInfo = [
+            'plugin-version' => file_exists(__DIR__.'/../composer.json') ? json_decode(file_get_contents(__DIR__.'/../composer.json'))->version : null,
+            'shop' => [
+                'system' => 'Magento',
+                'version' => 'Magento@'.\Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Framework\App\ProductMetadataInterface')->getVersion(),
+            ],
+            'environment' => array_merge(
+                \Releva\Retargeting\Base\AbstractShopInfo::getServerEnvironment(),
+                ['db' => \Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Framework\App\ResourceConnection')->getConnection()->fetchRow('SELECT @@version AS `version`, @@version_comment AS `server`'),]
+            ),
+            'callbacks' => [
+                'callback' => [
+                    'url' => sprintf('%sreleva.nz/shopInfo', $baseUrl),
+                    'parameters' => [],
+                ],
+                'export' => [
+                    'url' => sprintf('%sreleva.nz/products', $baseUrl),
+                    'parameters' => [
+                        'format' => ['values' => ['csv', 'json', ], 'default' => 'csv', 'optional' => true, ],
+                        'page' => ['type' => 'integer', 'default' => 0, 'optional' => true, 'info' => [
+                            'items-per-page' => '@todo' // RelevanzProductExportController::$ITEMS_PER_PAGE,
+                        ], ],
+                    ],
+                ],
+            ]
+        ];
+        
+        return $shopInfo;
+    }
+    
     private function getStoreId() {
         return 
             $this->state->getAreaCode() === \Magento\Backend\App\Area\FrontNameResolver::AREA_CODE

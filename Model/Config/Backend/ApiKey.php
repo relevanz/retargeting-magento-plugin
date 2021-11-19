@@ -7,8 +7,11 @@ class ApiKey extends \Magento\Framework\App\Config\Value {
      * @var \Magento\Framework\Message\ManagerInterface
      */
     private $messageManager;
+    
+    private $dataHelper;
 
     public function __construct(
+        \Relevanz\Tracking\Helper\Data $dataHelper,
         \Magento\Framework\Message\ManagerInterface $messageManager,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
@@ -18,6 +21,7 @@ class ApiKey extends \Magento\Framework\App\Config\Value {
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
+        $this->dataHelper = $dataHelper;
         $this->messageManager = $messageManager;
         parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
     }
@@ -25,7 +29,9 @@ class ApiKey extends \Magento\Framework\App\Config\Value {
     public function beforeSave()
     {
         try {
-            \Releva\Retargeting\Base\RelevanzApi::verifyApiKey($this->getValue());//@todo add info-url
+            \Releva\Retargeting\Base\RelevanzApi::verifyApiKey($this->getValue([
+                'callback-url' => $this->dataHelper->getShopInfo()['callbacks']['callback']['url'],
+            ]));
         } catch (\Exception $exception) {
             $this->messageManager->addError(__($exception->getMessage()));//@todo relevanz-exceptions, same like in KeyPost class
         }
