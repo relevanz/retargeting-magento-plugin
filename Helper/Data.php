@@ -27,12 +27,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     
     private $storeManager;
     
+    private $messageManager;
+    
     public function __construct(
         \Magento\Framework\App\State $state,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\App\Helper\Context $context
+        \Magento\Framework\App\Helper\Context $context,
+        \Magento\Framework\Message\ManagerInterface $messageManager
     ) {
         $this->storeManager = $storeManager;
+        $this->messageManager = $messageManager;
         $this->state = $state;
         $this->request = $context->getRequest();
         parent::__construct($context);
@@ -113,6 +117,23 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getApiKey(){
         return (string) $this->getConfigValue(self::XML_PATH_API_KEY);
+    }
+    
+    public function verifyApiKeyAndDisplayErrors (string $apiKey) :? \Releva\Retargeting\Base\Credentials
+    {
+        try {
+            //@todo save to config?
+            $credentials = \Releva\Retargeting\Base\RelevanzApi::verifyApiKey($apiKey, [
+                'callback-url' => $this->getShopInfo()['callbacks']['callback']['url'],
+            ]);
+            return $credentials;
+        } catch (\Releva\Retargeting\Base\Exception\RelevanzException $exception) {
+            $this->messageManager->addError(vsprintf($exception->getMessage(), $exception->getSprintfArgs()));
+            return null;
+        } catch (\Exception $exception) {
+            $this->messageManager->addError(__($exception->getMessage()));
+            return null;
+        }
     }
 
     /**

@@ -28,13 +28,7 @@ class ApiKey extends \Magento\Framework\App\Config\Value {
     
     public function beforeSave()
     {
-        try {
-            \Releva\Retargeting\Base\RelevanzApi::verifyApiKey($this->getValue([
-                'callback-url' => $this->dataHelper->getShopInfo()['callbacks']['callback']['url'],
-            ]));
-        } catch (\Exception $exception) {
-            $this->messageManager->addError(__($exception->getMessage()));//@todo relevanz-exceptions, same like in KeyPost class
-        }
+        $this->dataHelper->verifyApiKeyAndDisplayErrors($this->getValue());
         parent::beforeSave();
     }
 }
