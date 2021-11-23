@@ -15,8 +15,6 @@ namespace Relevanz\Tracking\Block;
 
 class Success extends \Relevanz\Tracking\Block\AbstractTracking{
 
-    const TRACKING_URL  =   'd.hyj.mobi';
-    const URL_PATH      =   'convNetw';
 
     /**
      * @var \Magento\Checkout\Model\Session
@@ -25,26 +23,17 @@ class Success extends \Relevanz\Tracking\Block\AbstractTracking{
 
     /**
      * @param \Relevanz\Tracking\Helper\Data $helper
-     * @param \Magento\Framework\Registry $registry
      * @param \Magento\Checkout\Model\Session $checkoutSession
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param array $data
      */
     public function __construct(\Relevanz\Tracking\Helper\Data $helper,
-                                \Magento\Framework\Registry $registry,
                                 \Magento\Checkout\Model\Session $checkoutSession,
                                 \Magento\Framework\View\Element\Template\Context $context,
                                 array $data = [])
     {
-        parent::__construct($helper, $registry, $context, $data);
+        parent::__construct($helper, $context, $data);
         $this->_checkoutSession = $checkoutSession;
-    }
-
-    /**
-     * @return string
-     */
-    protected function _isEnabled(){
-        return $this->_helper->isSuccessPageTrackEnabled();
     }
 
     /**
@@ -53,39 +42,27 @@ class Success extends \Relevanz\Tracking\Block\AbstractTracking{
     protected function getOrder(){
         return $this->_checkoutSession->getLastRealOrder();
     }
-
-    /**
-     * @return array
-     */
-    protected function _getUrlParams(){
-        $params = array();
+    
+    protected function getScriptUrl(string $clientId) {
         $order  = $this->getOrder();
+        $params = [];
         if($order instanceof \Magento\Sales\Model\Order) {
-            $itemsIds = array();
+            $itemsIds = [];
             foreach ($order->getAllVisibleItems() as $product) {
                 $itemsIds[] = $product->getProductId();
             }
             $params = array(
-//                'orderId'   => (string)$order->getId(),
-                'orderId'   => (string)$order->getIncrementId(),
-                'amount'    => number_format($order->getGrandTotal(), 2, '.', ''),
-                'eventName' => implode(",", $itemsIds),
-                'network'   => 'relevanz'
+                'orderId' => (string)$order->getIncrementId(),
+                'amount' => number_format($order->getGrandTotal(), 2, '.', ''),
+                'eventName' => implode(',', $itemsIds),
             );
         }
-        return $params;
+        return \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_CONV_URL.'?'.http_build_query(array_merge(
+            [
+                'cid' => $clientId,
+                'network' => 'relevanz',
+            ],
+            $params
+        ));
     }
-
-    /**
-     * @param array $params
-     * @return string
-     */
-    protected function _prepareScriptUrl($params = array()){
-        $url = \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_CONV_URL;
-        if(!empty($params)){
-            $url .= '?' . http_build_query($params);
-        }
-        return $url;
-    }
-    
 }

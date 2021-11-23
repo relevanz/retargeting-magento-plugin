@@ -5,13 +5,8 @@
             <settings>
                 <enabled>1</enabled>
                 <client_id></client_id>
+                <additional_html><![CDATA[<script type="text/javascript">var relevanzRetargetingForcePixel = true;</script>]]></additional_html>
             </settings>
-            <tracking>
-                <front_page_enabled>1</front_page_enabled>
-                <category_page_enabled>1</category_page_enabled>
-                <product_page_enabled>1</product_page_enabled>
-                <order_success_page_enabled>1</order_success_page_enabled>
-            </tracking>
         </relevanz_tracking>
     </default>
 </config>

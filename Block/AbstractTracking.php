@@ -8,12 +8,7 @@
  */
 namespace Relevanz\Tracking\Block;
 
-class AbstractTracking extends \Magento\Framework\View\Element\Template{
-
-    protected $_clientId;
-    protected $_scriptDefaultParams = array(
-        'async' => 'true'
-    );
+abstract class AbstractTracking extends \Magento\Framework\View\Element\Template{
 
     /**
      * @var \Relevanz\Tracking\Helper\Data
@@ -21,100 +16,34 @@ class AbstractTracking extends \Magento\Framework\View\Element\Template{
     protected $_helper;
 
     /**
-     * @var \Magento\Framework\Registry
-     */
-    protected $_registry;
-
-    /**
      * @param \Relevanz\Tracking\Helper\Data $helper
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param array $data
      */
     public function __construct(\Relevanz\Tracking\Helper\Data $helper,
-                                \Magento\Framework\Registry $registry,
                                 \Magento\Framework\View\Element\Template\Context $context,
                                 array $data = [])
     {
         $this->_helper = $helper;
-        $this->_registry = $registry;
-        $this->_clientId = (string) $this->_helper->getClientId();
         parent::__construct($context, $data);
     }
 
-    /**
-     * @return bool
-     */
-    protected function _isEnabled(){
-        return false;
+    
+    public function isActive() {
+        return $this->_helper->getClientId() && $this->_helper->isEnabled();
     }
-
-    /**
-     * @return array
-     */
-    protected function _getUrlParams(){
-        return array();
+    
+    public function getAdditionalHtml()
+    {
+        return $this->_helper->getAdditionalHtml();
     }
-
-    /**
-     * @param array $params
-     * @return string
-     */
-    protected function _prepareScriptUrl($params = array()){
-        $url = \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_TRACKER_URL;
-        if(!empty($params)){
-            $url .= '?' . http_build_query($params);
-        }
-        return $url;
-    }
-
-    /**
-     * @param null $url
-     * @param array $params
-     * @return null|string
-     */
-    protected function _prepareScript($url = null, $params = array()){
-        $script = null;
-        if($url) {
-            $params = array_merge($params, $this->_scriptDefaultParams);
-            $script = '<script type="text/javascript" src="' . $url . '"';
-            foreach ($params as $param => $value) {
-                $script .= sprintf(' %s="%s"', $param, $value);
-            }
-            $script .= '>';
-            $script .= '</script>';
-        }
-        return $script;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function _canTrack(){
-        return (($this->_clientId
-            && $this->_helper->isEnabled()
-            && $this->_isEnabled()
-        )
-            ? true : false);
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function _getPreparedScript(){
-        $params = $this->_getUrlParams();
-        if(empty($params)){
-            return array();
-        }
-        $params = array_merge($params, array('cid' => $this->_clientId));
-        return $this->_prepareScript($this->_prepareScriptUrl($params), array());
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getScript(){
-        return ($this->_canTrack()) ? $this->_getPreparedScript() : null;
+    
+    abstract protected function getScriptUrl(string $clientId);
+    
+    public function getScriptParameters () {
+        return [
+            'src' => $this->getScriptUrl((string) $this->_helper->getClientId()),
+            'async' => 'true',
+        ];
     }
 }

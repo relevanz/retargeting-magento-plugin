@@ -15,24 +15,9 @@
                     <label>Api Key</label>
                     <backend_model>Relevanz\Tracking\Model\Config\Backend\ApiKey</backend_model>
                 </field>
-            </group>
-            <group id="tracking" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Tracking</label>
-                <field id="front_page_enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Front Page</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="category_page_enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Category Page</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="product_page_enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Product Page</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="order_success_page_enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Order Success Page</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                <field id="additional_html" translate="label comment" type="textarea" sortOrder="50" showInDefault="0" showInWebsite="0" showInStore="1">
+                    <label>Additional HTML example</label>
+                    <comment>With additional html you can trigger the pixel depending on your cookie-consent.</comment>
                 </field>
             </group>
         </section>

@@ -19,29 +19,17 @@ class Category extends \Relevanz\Tracking\Block\AbstractTracking{
      * @return \Magento\Catalog\Model\Category
      */
     protected function _getCategory(){
-        return $this->_registry->registry('current_category');
+        return $this->_helper->getRegistry()->registry('current_category');
     }
-
-    /**
-     * @return string
-     */
-    protected function _isEnabled(){
-        return $this->_helper->isCategoryTrackEnabled();
-    }
-
-    /**
-     * @return array
-     */
-    protected function _getUrlParams(){
-        $params   = array();
-        $category = $this->_getCategory();
-        if($category instanceof \Magento\Catalog\Model\Category) {
-            $params = array(
-                't'         => 'd',
-                'action'    => 'c',
-                'id'        => $category->getId()
-            );
-        }
-        return $params;
+    
+    protected function getScriptUrl(string $clientId) {
+        return \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_TRACKER_URL.'?'.http_build_query(array_merge(
+            [
+                'cid' => $clientId,
+                't' => 'd',
+                'action' => 'c',
+            ],
+            $this->_getCategory() === null ? [] : ['id' => $this->_getCategory()->getId()]
+         ));
     }
 }

@@ -12,14 +12,10 @@ use Magento\Store\Model\ScopeInterface;
 
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
-    const XML_PATH_ENABLED      = 'relevanz_tracking/settings/enabled';
-    const XML_PATH_CLIENT_ID    = 'relevanz_tracking/settings/client_id';
-    const XML_PATH_API_KEY      = 'relevanz_tracking/settings/api_key';
-
-    const XML_PATH_TRACKING_FRONT_PAGE      = 'relevanz_tracking/tracking/front_page_enabled';
-    const XML_PATH_TRACKING_FRONT_CATEGORY  = 'relevanz_tracking/tracking/category_page_enabled';
-    const XML_PATH_TRACKING_FRONT_PRODUCT   = 'relevanz_tracking/tracking/product_page_enabled';
-    const XML_PATH_TRACKING_FRONT_SUCCESS_PAGE    = 'relevanz_tracking/tracking/order_success_page_enabled';
+    const XML_PATH_ENABLED = 'relevanz_tracking/settings/enabled';
+    const XML_PATH_CLIENT_ID = 'relevanz_tracking/settings/client_id';
+    const XML_PATH_API_KEY = 'relevanz_tracking/settings/api_key';
+    const XML_PATH_ADDITIONAL_HTML = 'relevanz_tracking/settings/additional_html';
 
     private $state;
     
@@ -31,19 +27,26 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     
     private $resourceConfig;
     
+    private $registry;
+    
     public function __construct(
         \Magento\Framework\App\State $state,
+        \Magento\Framework\Registry $registry,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Framework\Message\ManagerInterface $messageManager,
         \Magento\Config\Model\ResourceModel\Config $resourceConfig
     ) {
         $this->resourceConfig = $resourceConfig;
+        $this->registry = $registry;
         $this->storeManager = $storeManager;
         $this->messageManager = $messageManager;
         $this->state = $state;
         $this->request = $context->getRequest();
         parent::__construct($context);
+    }
+    public function getRegistry () {
+        return $this->registry;
     }
     
     public function getShopInfo() : array
@@ -144,33 +147,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             return null;
         }
     }
-
-    /**
-     * @return string
-     */
-    public function isFrontPageTrackEnabled(){
-        return (string) $this->getConfigValue(self::XML_PATH_TRACKING_FRONT_PAGE);
-    }
-
-    /**
-     * @return string
-     */
-    public function isCategoryTrackEnabled(){
-        return (string) $this->getConfigValue(self::XML_PATH_TRACKING_FRONT_CATEGORY);
-    }
-
-    /**
-     * @return string
-     */
-    public function isProductTrackEnabled(){
-        return (string) $this->getConfigValue(self::XML_PATH_TRACKING_FRONT_PRODUCT);
-    }
-
-    /**
-     * @return string
-     */
-    public function isSuccessPageTrackEnabled(){
-        return (string) $this->getConfigValue(self::XML_PATH_TRACKING_FRONT_SUCCESS_PAGE);
-    }
     
+    public function getAdditionalHtml() {
+        return (string) $this->getConfigValue(self::XML_PATH_ADDITIONAL_HTML);
+    }
+
 }

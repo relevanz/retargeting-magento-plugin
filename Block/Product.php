@@ -20,29 +20,17 @@ class Product extends \Relevanz\Tracking\Block\AbstractTracking{
      * @return \Magento\Catalog\Model\Product
      */
     protected function _getProduct(){
-        return $this->_registry->registry('current_product');
+        return $this->_helper->getRegistry()->registry('current_product');
     }
 
-    /**
-     * @return string
-     */
-    protected function _isEnabled(){
-        return $this->_helper->isProductTrackEnabled();
-    }
-
-    /**
-     * @return array
-     */
-    protected function _getUrlParams(){
-        $params  = array();
-        $product = $this->_getProduct();
-        if($product instanceof \Magento\Catalog\Model\Product) {
-            $params = array(
-                't'         => 'd',
-                'action'    => 'p',
-                'id'        => $product->getId()
-            );
-        }
-        return $params;
+    protected function getScriptUrl(string $clientId) {
+        return \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_TRACKER_URL.'?'.http_build_query(array_merge(
+            [
+                'cid' => $clientId,
+                't' => 'd',
+                'action' => 'p',
+            ],
+            $this->_getProduct() === null ? [] : ['id' => $this->_getProduct()->getId()]
+        ));
     }
 }

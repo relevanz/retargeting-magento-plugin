@@ -15,20 +15,11 @@ namespace Relevanz\Tracking\Block;
 
 class Page extends \Relevanz\Tracking\Block\AbstractTracking{
 
-    /**
-     * @return string
-     */
-    protected function _isEnabled(){
-        return $this->_helper->isFrontPageTrackEnabled();
-    }
-
-    /**
-     * @return array
-     */
-    protected function _getUrlParams(){
-        return array(
-            't'         => 'd',
-            'action'    => 's'
-        );
+    protected function getScriptUrl(string $clientId) {
+        return \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_TRACKER_URL.'?'.http_build_query([
+            'cid' => $clientId,
+            't' => 'd',
+            'action' => 's'
+        ]);
     }
 }

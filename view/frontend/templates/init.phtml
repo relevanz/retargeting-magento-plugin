@@ -1,1 +1,19 @@
-<?php echo $this->getScript() ?>
+<?php /*@todo*/print_r($this->getScriptParameters()); ?>
+
+<?php if ($this->isActive()) { ?>
+    <?php echo $this->getAdditionalHtml(); ?>
+    <script type="text/javascript">
+        var relevanzRetargetingInterval = window.setInterval(function () {
+            if ((typeof relevanzRetargetingForcePixel !== "undefined" && relevanzRetargetingForcePixel === true)) {
+                window.clearInterval(relevanzRetargetingInterval);
+                var script = document.createElement('script');
+                script.id = "relevanzRetargetingJs"
+                script.type = 'text/javascript';
+                <?php foreach ($this->getScriptParameters() as $key => $value) { ?>
+                    script.<?php echo $key; ?> = "<?php echo $value; ?>";
+                <?php } ?>
+                document.body.appendChild(script);
+            }
+        }, 300);
+    </script>
+<?php } ?>
