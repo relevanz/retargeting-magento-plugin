@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Created by:
  * User: Oleg G
@@ -13,51 +13,34 @@
 
 namespace Relevanz\Tracking\Block;
 
-class Success extends \Relevanz\Tracking\Block\AbstractTracking{
+use Relevanz\Tracking\Block\AbstractTracking;
+use Magento\Sales\Model\Order as MagentoOrder;
+use Releva\Retargeting\Base\RelevanzApi;
 
-
-    /**
-     * @var \Magento\Checkout\Model\Session
-     */
-    protected $_checkoutSession;
-
-    /**
-     * @param \Relevanz\Tracking\Helper\Data $helper
-     * @param \Magento\Checkout\Model\Session $checkoutSession
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param array $data
-     */
-    public function __construct(\Relevanz\Tracking\Helper\Data $helper,
-                                \Magento\Checkout\Model\Session $checkoutSession,
-                                \Magento\Framework\View\Element\Template\Context $context,
-                                array $data = [])
+class Success extends AbstractTracking
+{
+    
+    protected function getOrder() :? MagentoOrder
     {
-        parent::__construct($helper, $context, $data);
-        $this->_checkoutSession = $checkoutSession;
-    }
-
-    /**
-     * @return \Magento\Sales\Model\Order
-     */
-    protected function getOrder(){
-        return $this->_checkoutSession->getLastRealOrder();
+        return $this->helper->getCheckoutSession()->getLastRealOrder();
     }
     
-    protected function getScriptUrl(string $clientId) {
-        $order  = $this->getOrder();
+    protected function getScriptUrl(string $clientId) : string
+    {
+        $order = $this->getOrder();
         $params = [];
-        if($order instanceof \Magento\Sales\Model\Order) {
+        if($order !== null) {
             $itemsIds = [];
             foreach ($order->getAllVisibleItems() as $product) {
                 $itemsIds[] = $product->getProductId();
             }
             $params = array(
-                'orderId' => (string)$order->getIncrementId(),
-                'amount' => number_format($order->getGrandTotal(), 2, '.', ''),
+                'orderId' => (string) $order->getIncrementId(),
+                'amount' => number_format((float) $order->getGrandTotal(), 2, '.', ''),
                 'eventName' => implode(',', $itemsIds),
             );
         }
-        return \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_CONV_URL.'?'.http_build_query(array_merge(
+        return RelevanzApi::RELEVANZ_CONV_URL.'?'.http_build_query(array_merge(
             [
                 'cid' => $clientId,
                 'network' => 'relevanz',

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Created by:
  * User: Oleg G
@@ -13,23 +13,28 @@
 
 namespace Relevanz\Tracking\Block;
 
-class Category extends \Relevanz\Tracking\Block\AbstractTracking{
+use Relevanz\Tracking\Block\AbstractTracking;
+use Magento\Catalog\Model\Category as MagentoCategory;
+use Releva\Retargeting\Base\RelevanzApi;
 
-    /**
-     * @return \Magento\Catalog\Model\Category
-     */
-    protected function _getCategory(){
-        return $this->_helper->getRegistry()->registry('current_category');
+class Category extends AbstractTracking
+{
+    
+    protected function getCurrentCategory() :? MagentoCategory
+    {
+        return $this->helper->getRegistry()->registry('current_category');
     }
     
-    protected function getScriptUrl(string $clientId) {
-        return \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_TRACKER_URL.'?'.http_build_query(array_merge(
+    protected function getScriptUrl(string $clientId) : string
+    {
+        return RelevanzApi::RELEVANZ_TRACKER_URL.'?'.http_build_query(array_merge(
             [
                 'cid' => $clientId,
                 't' => 'd',
                 'action' => 'c',
             ],
-            $this->_getCategory() === null ? [] : ['id' => $this->_getCategory()->getId()]
-         ));
+            $this->getCurrentCategory() === null ? [] : ['id' => $this->getCurrentCategory()->getId()]
+        ));
     }
+    
 }

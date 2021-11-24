@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Created by:
  * User: Oleg G
@@ -12,6 +12,7 @@ namespace Relevanz\Tracking\Controller\Adminhtml\Statistics;
 use Relevanz\Tracking\Controller\Adminhtml\Statistics;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Backend\App\Action\Context;
+use Magento\Backend\Model\View\Result\Page\Interceptor as ResultPage;
 
 class Index extends Statistics
 {
@@ -27,14 +28,9 @@ class Index extends Statistics
         parent::__construct($context);
     }
     
-    /**
-     * Statistics 
-     *
-     * @return \Magento\Backend\Model\View\Result\Page
-     */
-    public function execute()
+    public function execute() : ResultPage
     {
-        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
+        /** @var ResultPage $resultPage */
         $resultPage = $this->pageFactory->create();
         $resultPage->setActiveMenu('Relevanz_Tracking::tastefinder');
         $resultPage->getConfig()->getTitle()->prepend(__('releva.nz Dashboard'));

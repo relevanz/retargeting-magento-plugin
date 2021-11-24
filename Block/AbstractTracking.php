@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Created by:
  * User: Oleg G
@@ -8,41 +8,37 @@
  */
 namespace Relevanz\Tracking\Block;
 
-abstract class AbstractTracking extends \Magento\Framework\View\Element\Template{
+use Relevanz\Tracking\Helper\Data as Helper;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context as TemplateContext;
 
-    /**
-     * @var \Relevanz\Tracking\Helper\Data
-     */
-    protected $_helper;
-
-    /**
-     * @param \Relevanz\Tracking\Helper\Data $helper
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param array $data
-     */
-    public function __construct(\Relevanz\Tracking\Helper\Data $helper,
-                                \Magento\Framework\View\Element\Template\Context $context,
-                                array $data = [])
+abstract class AbstractTracking extends Template
+{
+    
+    protected $helper;
+    
+    public function __construct(Helper $helper, TemplateContext $context, array $data = [])
     {
-        $this->_helper = $helper;
+        $this->helper = $helper;
         parent::__construct($context, $data);
     }
-
     
-    public function isActive() {
-        return $this->_helper->getClientId() && $this->_helper->isEnabled();
-    }
-    
-    public function getAdditionalHtml()
+    public function isActive() : bool
     {
-        return $this->_helper->getAdditionalHtml();
+        return $this->helper->getClientId() && $this->helper->isEnabled();
     }
     
-    abstract protected function getScriptUrl(string $clientId);
+    public function getAdditionalHtml() : string
+    {
+        return $this->helper->getAdditionalHtml();
+    }
     
-    public function getScriptParameters () {
+    abstract protected function getScriptUrl(string $clientId) : string;
+    
+    public function getScriptParameters () : array
+    {
         return [
-            'src' => $this->getScriptUrl((string) $this->_helper->getClientId()),
+            'src' => $this->getScriptUrl((string) $this->helper->getClientId()),
             'async' => 'true',
         ];
     }

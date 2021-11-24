@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Created by:
  * User: Oleg G
@@ -10,29 +10,26 @@ namespace Relevanz\Tracking\Controller\Adminhtml\Statistics;
 
 use Relevanz\Tracking\Controller\Adminhtml\Statistics;
 use Magento\Framework\App\Cache\TypeListInterface;
-use Magento\Config\Model\ResourceModel\Config;
+use Magento\Config\Model\ResourceModel\Config as ResourceConfig;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\Controller\Result\Redirect;
+use Relevanz\Tracking\Helper\Data as DataHelper;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Cache\Type\Config as CacheTypeConfig;
 
 class KeyPost extends Statistics
 {
-
-    /**
-     * @var \Magento\Framework\App\Config\ConfigResource\ConfigInterface
-     */
+    
     private $resourceConfig;
     
     private $cacheTypeList;
     
     private $dataHelper;
 
-    /**
-     * @param Config $resourceConfig
-     * @paran TypeListInterface $cacheTypeList
-     * @param Context $context
-     */
     public function __construct(
-        \Relevanz\Tracking\Helper\Data $dataHelper,
-        Config $resourceConfig,
+        DataHelper $dataHelper,
+        ResourceConfig $resourceConfig,
         TypeListInterface $cacheTypeList,
         Context $context
     ) {
@@ -41,19 +38,16 @@ class KeyPost extends Statistics
         $this->resourceConfig = $resourceConfig;
         parent::__construct($context);
     }
-
-    /**
-     * @return \Magento\Framework\Controller\Result\Redirect
-     */
-    public function execute()
+    
+    public function execute() : Redirect
     {
         $storeId    =   $this->getRequest()->getParam('store', 0);
         $apiKey     =   $this->getRequest()->getPostValue('api_key');
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($this->dataHelper->verifyApiKeyAndDisplayErrors($apiKey) !== null) {
-            $scope = ($storeId) ? \Magento\Store\Model\ScopeInterface::SCOPE_STORES : \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
-            $this->resourceConfig->saveConfig(\Relevanz\Tracking\Helper\Data::XML_PATH_API_KEY, $apiKey, $scope, $storeId);
-            $this->cacheTypeList->cleanType(\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER);
+            $scope = ($storeId) ? ScopeInterface::SCOPE_STORES : ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
+            $this->resourceConfig->saveConfig(DataHelper::XML_PATH_API_KEY, $apiKey, $scope, $storeId);
+            $this->cacheTypeList->cleanType(CacheTypeConfig::TYPE_IDENTIFIER);
             $this->messageManager->addSuccess(__('You saved the configuration.'));
         }
         $params = array();

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Created by:
  * User: Oleg G
@@ -22,7 +22,7 @@ abstract class Statistics extends Action
      *
      * @return this
      */
-    protected function _initAction()
+    protected function _initAction() : self
     {
         $this->_view->loadLayout();
         $this->_setActiveMenu('Relevanz_Tracking::statistics')->_addBreadcrumb(__('releva.nz Dashboard'), __('releva.nz Dashboard'));
@@ -34,7 +34,7 @@ abstract class Statistics extends Action
      *
      * @return bool
      */
-    protected function _isAllowed()
+    protected function _isAllowed() : bool
     {
         return $this->_authorization->isAllowed('Relevanz_Tracking::statistics');
     }

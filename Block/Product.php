@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Created by:
  * User: Oleg G
@@ -13,24 +13,28 @@
 
 namespace Relevanz\Tracking\Block;
 
-class Product extends \Relevanz\Tracking\Block\AbstractTracking{
+use Relevanz\Tracking\Block\AbstractTracking;
+use Releva\Retargeting\Base\RelevanzApi;
+use Magento\Catalog\Model\Product as MagentoProduct;
 
-
-    /**
-     * @return \Magento\Catalog\Model\Product
-     */
-    protected function _getProduct(){
-        return $this->_helper->getRegistry()->registry('current_product');
+class Product extends AbstractTracking
+{
+    
+    protected function getCurrentProduct() :? MagentoProduct
+    {
+        return $this->helper->getRegistry()->registry('current_product');
     }
-
-    protected function getScriptUrl(string $clientId) {
-        return \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_TRACKER_URL.'?'.http_build_query(array_merge(
+    
+    protected function getScriptUrl(string $clientId) : string
+    {
+        return RelevanzApi::RELEVANZ_TRACKER_URL.'?'.http_build_query(array_merge(
             [
                 'cid' => $clientId,
                 't' => 'd',
                 'action' => 'p',
             ],
-            $this->_getProduct() === null ? [] : ['id' => $this->_getProduct()->getId()]
+            $this->getCurrentProduct() === null ? [] : ['id' => $this->getCurrentProduct()->getId()]
         ));
     }
+    
 }

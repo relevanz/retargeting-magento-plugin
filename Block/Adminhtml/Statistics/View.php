@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 /**
  * Created by:
  * User: Oleg G
@@ -9,6 +9,7 @@
 
 namespace Relevanz\Tracking\Block\Adminhtml\Statistics;
 
+use Releva\Retargeting\Base\RelevanzApi;
 use Relevanz\Tracking\Helper\Data as Helper;
 use Magento\Backend\Block\Template\Context;
 use Magento\Backend\Block\Widget;
@@ -18,65 +19,48 @@ class View extends Widget {
     private $helper;
     
     protected $_template = 'Relevanz_Tracking::statistics/view.phtml';
-
-    /**
-     * @param Helper $helper
-     * @param Context $context
-     * @param array $data
-     */
+    
     public function __construct(Helper $helper, Context $context, array $data = [])
     {
         $this->helper = $helper;
         parent::__construct($context, $data);
     }
     
-    /**
-     * @return bool
-     */
-    public function isStore()
+    public function isStore() : bool
     {
         return $this->_getStoreId() !== 0;
     }
-
-    /**
-     * @return int
-     */
-    protected function _getStoreId()
+    
+    protected function _getStoreId() : int
     {
         return (int)$this->getRequest()->getParam('store', 0);
     }
     
-    public function getApiKey()
+    public function getApiKey() : string
     {
         return $this->helper->getApiKey();
     }
     
-    public function getIframeUrl()
+    public function getIframeUrl() : string
     {
         return $this->isStore() && $this->validateApiKey()
-            ? \Releva\Retargeting\Base\RelevanzApi::RELEVANZ_STATS_FRAME.$this->helper->getApiKey()
+            ? RelevanzApi::RELEVANZ_STATS_FRAME.$this->helper->getApiKey()
             : 'https://releva.nz'
         ;
     }
-
-    /**
-     * @return bool
-     */
-    public function validateApiKey()
+    
+    public function validateApiKey() : bool
     {
         try {
-            \Releva\Retargeting\Base\RelevanzApi::verifyApiKey($this->getApiKey());
+            RelevanzApi::verifyApiKey($this->getApiKey());
             return true;
         } catch (\Exception $ex) {
             return false;
         }
     }
     
-    /**
-     * Api Key Post Url
-     * @return string
-     */
-    public function apiKeyPostUrl(){
+    public function apiKeyPostUrl() : string
+    {
         $params = array();
         if($storeId = $this->_getStoreId()) {
             $params['store'] = $storeId;
