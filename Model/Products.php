@@ -11,8 +11,11 @@ namespace Relevanz\Tracking\Model;
 
 use Magento\Store\Model\Store;
 
-class Products{
-
+class Products
+{
+    
+    static $pageLimit = 100;
+    
     /**
      * @var \Magento\Catalog\Model\ProductFactory
      */
@@ -58,7 +61,7 @@ class Products{
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function getCollection($storeId = 0){
+    public function getCollection($storeId = 0, $page = null){
         $store = $this->_getStore($storeId);
         $collection = $this->_productFactory->create()->getCollection()->addAttributeToSelect(
             'sku'
@@ -71,6 +74,9 @@ class Products{
         )->setStore(
             $store
         );
+        if ($page !== null) {
+            $collection->setPage($page, self::$pageLimit);
+        }
         if ($this->moduleManager->isEnabled('Magento_CatalogInventory')) {
             $collection->joinField(
                 'qty',
@@ -132,8 +138,7 @@ class Products{
             $collection->joinAttribute('status', 'catalog_product/status', 'entity_id', null, 'inner');
             $collection->joinAttribute('visibility', 'catalog_product/visibility', 'entity_id', null, 'inner');
         }
-
-        return $collection;
+        return $page !== null && $collection->getLastPageNumber() < $page ? null : $collection;
     }
 
 }

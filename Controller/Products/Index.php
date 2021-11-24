@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Created by:
@@ -10,30 +10,27 @@
 
 namespace Relevanz\Tracking\Controller\Products;
 
+use Magento\Framework\App\Action\Action;
+use Relevanz\Tracking\Model\Products;
 use Magento\Framework\Controller\ResultFactory;
-use Magento\CatalogInventory\Model\Stock;
+use Relevanz\Tracking\Helper\Data;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\Action\Context;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Controller\ResultInterface;
 
-class Index extends \Magento\Framework\App\Action\Action {
-
-    /**
-     * @var \Relevanz\Tracking\Model\Products
-     */
+class Index extends Action
+{
+    
     private $productsModel;
     
     private $storeManager;
     
     private $helper;
-
-    /**
-     * @param \Magento\Framework\App\Action\Context $context
-     * @param \Relevanz\JsonExport\Model\Products $productsModel
-     */
-    public function __construct(
-            \Relevanz\Tracking\Model\Products $productsModel,
-            \Relevanz\Tracking\Helper\Data $helper,
-            \Magento\Store\Model\StoreManagerInterface $storeManager,
-            \Magento\Framework\App\Action\Context $context
-    ) {
+    
+    public function __construct(Products $productsModel, Data $helper, StoreManagerInterface $storeManager, Context $context)
+    {
         $this->productsModel = $productsModel;
         $this->storeManager = $storeManager;
         $this->helper = $helper;
@@ -43,18 +40,19 @@ class Index extends \Magento\Framework\App\Action\Action {
     /**
      * @return int
      */
-    protected function _getStoreId() {
+    protected function _getStoreId() : int
+    {
         return (int) $this->storeManager->getStore()->getId();
     }
     
-    private function getProductCategoryId (\Magento\Catalog\Model\Product $product)
+    private function getProductCategoryId (Product $product) : string
     {
         $categoryIds = $product->getCategoryIds();
         $categoryId = count($categoryIds) ? current($categoryIds) : '';
         return $categoryId;
     }
     
-    private function getProductImage (\Magento\Catalog\Model\Product $product)
+    private function getProductImage (Product $product) :? string
     {
         $baseImage = $product->getImage();
         $image = null;
@@ -72,14 +70,18 @@ class Index extends \Magento\Framework\App\Action\Action {
         return $image;
     }
 
-    private function getProducts($storeId) {
-        $result = [];
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $collection = $this->productsModel->getCollection($storeId);
-        if ($collection) {
+    private function getProducts($storeId) :? array
+    {
+        $objectManager = ObjectManager::getInstance();
+        $page = $this->getRequest()->getParam('page');
+        $collection = $this->productsModel->getCollection($storeId, $page === null ? null : (((int) $page) + 1));
+        if ($collection === null) {
+            return null;
+        } else {
+            $result = [];
             foreach ($collection as $product) {
                 $product->setStoreId($storeId);
-                $product = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId());
+                $product = $objectManager->create(Product::class)->load($product->getId());
                 $result[] = array(
                     'product_id' => (int) $product->getId(),
                     'category_ids' => $this->getProductCategoryId($product),
@@ -91,25 +93,30 @@ class Index extends \Magento\Framework\App\Action\Action {
                     'image' => $this->getProductImage($product),
                 );
             }
+            return $result;
         }
-        return $result;
     }
 
-    /**
-     * @return \Magento\Framework\Controller\ResultInterface
-     */
-    public function execute() {
+    public function execute() : ResultInterface
+    {
         if (!$this->helper->isAuthed($this->getRequest()->getParam('auth', ''))) {
-            throw new \Exception('Not authed');
+            $response = $this->resultFactory->create(ResultFactory::TYPE_RAW);
+            $response->setHttpResponseCode(401);
+            return $response;
         }
         try {
             $storeId = $this->_getStoreId();
             $result = $this->getProducts($storeId);
         } catch (\Exception $e) {
-            $result = array(
-                'status' => 'ERROR',
-                'message' => $e->getMessage()
-            );
+            $response = $this->resultFactory->create(ResultFactory::TYPE_RAW);
+            $response->setContents($e->getMessage());
+            $response->setHttpResponseCode(500);
+            return $response;
+        }
+        if ($result === null) {
+            $response = $this->resultFactory->create(ResultFactory::TYPE_RAW);
+            $response->setHttpResponseCode(404);
+            return $response;
         }
         $type = $this->getRequest()->getParam('type', 'json');
         $type = in_array($type, ['json', 'csv']) ? $type : 'json';
@@ -128,5 +135,5 @@ class Index extends \Magento\Framework\App\Action\Action {
             return $response;
         }
     }
-
+    
 }
