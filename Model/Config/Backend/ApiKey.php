@@ -1,32 +1,28 @@
-<?php
+<?php declare(strict_types = 1);
+
 namespace Relevanz\Tracking\Model\Config\Backend;
 
-class ApiKey extends \Magento\Framework\App\Config\Value {
-    
-    /**
-     * @var \Magento\Framework\Message\ManagerInterface
-     */
-    private $messageManager;
+use Magento\Framework\App\Config\Value as ConfigValue;
+use Relevanz\Tracking\Helper\Data as DataHelper;
+use Magento\Framework\Model\Context;
+use Magento\Framework\Registry;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Cache\TypeListInterface;
+use Magento\Framework\Model\ResourceModel\AbstractResource;
+use Magento\Framework\Data\Collection\AbstractDb;
+
+class ApiKey extends ConfigValue
+{
     
     private $dataHelper;
 
-    public function __construct(
-        \Relevanz\Tracking\Helper\Data $dataHelper,
-        \Magento\Framework\Message\ManagerInterface $messageManager,
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\App\Config\ScopeConfigInterface $config,
-        \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-        array $data = []
-    ) {
+    public function __construct(DataHelper $dataHelper, Context $context, Registry $registry, ScopeConfigInterface $config, TypeListInterface $cacheTypeList, AbstractResource $resource = null, AbstractDb $resourceCollection = null, array $data = [])
+    {
         $this->dataHelper = $dataHelper;
-        $this->messageManager = $messageManager;
         parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
     }
     
-    public function beforeSave()
+    public function beforeSave() : void
     {
         $this->dataHelper->verifyApiKeyAndDisplayErrors($this->getValue());
         parent::beforeSave();
