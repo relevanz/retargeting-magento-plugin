@@ -23,6 +23,7 @@ use Releva\Retargeting\Base\Export\ExporterInterface;
 use Releva\Retargeting\Base\Export\ProductJsonExporter;
 use Releva\Retargeting\Base\Export\ProductCsvExporter;
 use Releva\Retargeting\Base\Export\Item\ProductExportItem;
+use Magento\Store\Api\Data\StoreInterface;
 
 class Index extends Action
 {
@@ -40,13 +41,10 @@ class Index extends Action
         $this->helper = $helper;
         parent::__construct($context);
     }
-
-    /**
-     * @return int
-     */
-    protected function _getStoreId() : int
+    
+    protected function getStore() : StoreInterface
     {
-        return (int) $this->storeManager->getStore()->getId();
+        return $this->storeManager->getStore();
     }
     
     private function getProductImage (Product $product) :? string
@@ -67,17 +65,17 @@ class Index extends Action
         return $image;
     }
 
-    private function getProducts(string $type, $storeId) :? ExporterInterface
+    private function getProducts(string $type, StoreInterface $store) :? ExporterInterface
     {
         $objectManager = ObjectManager::getInstance();
         $page = $this->getRequest()->getParam('page');
-        $collection = $this->productsModel->getCollection($storeId, $page === null ? null : (((int) $page) + 1));
+        $collection = $this->productsModel->getCollection($store, $page === null ? null : (((int) $page) + 1));
         if ($collection === null) {
             return null;
         } else {
             $exporter = $type === 'json' ? new ProductJsonExporter() : new ProductCsvExporter();
             foreach ($collection as $product) {
-                $product->setStoreId($storeId);
+                $product->setStore($store);
                 $product = $objectManager->create(Product::class)->load($product->getId());
                 $exporter->addItem(new ProductExportItem(
                         (int) $product->getId(),
@@ -102,9 +100,8 @@ class Index extends Action
             $response->setHttpResponseCode(401);
         } else {
             try {
-                $storeId = $this->_getStoreId();
                 $type = $this->getRequest()->getParam('type', 'csv');
-                $exporter = $this->getProducts($type === 'json' ? $type : 'csv', $storeId);
+                $exporter = $this->getProducts($type === 'json' ? $type : 'csv', $this->getStore());
                 if ($exporter === null) {
                     $response->setHttpResponseCode(404);
                 } else {
