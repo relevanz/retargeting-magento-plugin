@@ -12,7 +12,7 @@ namespace Relevanz\Tracking\Controller\Adminhtml\Statistics;
 use Relevanz\Tracking\Controller\Adminhtml\Statistics;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Backend\App\Action\Context;
-use Magento\Backend\Model\View\Result\Page\Interceptor as ResultPage;
+use Magento\Backend\Model\View\Result\Page as ResultPage;
 
 class Index extends Statistics
 {
