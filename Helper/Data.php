@@ -94,11 +94,11 @@ class Data extends AbstractHelper
             ),
             'callbacks' => [
                 'callback' => [
-                    'url' => sprintf('%sreleva.nz/shopInfo', $baseUrl),
+                    'url' => sprintf('%srelevanz/shopInfo', $baseUrl),
                     'parameters' => [],
                 ],
                 'export' => [
-                    'url' => sprintf('%sreleva.nz/products', $baseUrl),
+                    'url' => sprintf('%srelevanz/products', $baseUrl),
                     'parameters' => [
                         'format' => ['values' => ['csv', 'json', ], 'default' => 'csv', 'optional' => true, ],
                         'page' => ['type' => 'integer', 'default' => 0, 'optional' => true, 'info' => [
