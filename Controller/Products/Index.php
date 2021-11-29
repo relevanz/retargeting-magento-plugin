@@ -19,6 +19,10 @@ use Magento\Framework\App\Action\Context;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Controller\ResultInterface;
+use Releva\Retargeting\Base\Export\ExporterInterface;
+use Releva\Retargeting\Base\Export\ProductJsonExporter;
+use Releva\Retargeting\Base\Export\ProductCsvExporter;
+use Releva\Retargeting\Base\Export\Item\ProductExportItem;
 
 class Index extends Action
 {
@@ -45,13 +49,6 @@ class Index extends Action
         return (int) $this->storeManager->getStore()->getId();
     }
     
-    private function getProductCategoryId (Product $product) : string
-    {
-        $categoryIds = $product->getCategoryIds();
-        $categoryId = count($categoryIds) ? current($categoryIds) : '';
-        return $categoryId;
-    }
-    
     private function getProductImage (Product $product) :? string
     {
         $baseImage = $product->getImage();
@@ -70,7 +67,7 @@ class Index extends Action
         return $image;
     }
 
-    private function getProducts($storeId) :? array
+    private function getProducts(string $type, $storeId) :? ExporterInterface
     {
         $objectManager = ObjectManager::getInstance();
         $page = $this->getRequest()->getParam('page');
@@ -78,62 +75,50 @@ class Index extends Action
         if ($collection === null) {
             return null;
         } else {
-            $result = [];
+            $exporter = $type === 'json' ? new ProductJsonExporter() : new ProductCsvExporter();
             foreach ($collection as $product) {
                 $product->setStoreId($storeId);
                 $product = $objectManager->create(Product::class)->load($product->getId());
-                $result[] = array(
-                    'product_id' => (int) $product->getId(),
-                    'category_ids' => $this->getProductCategoryId($product),
-                    'product_name' => $product->getName(),
-                    'short_description' => $product->getShortDescription(),
-                    'long_description' => $product->getDescription(),
-                    'price' => $product->getPrice(),
-                    'link' => $product->getProductUrl(),
-                    'image' => $this->getProductImage($product),
-                );
+                $exporter->addItem(new ProductExportItem(
+                        (int) $product->getId(),
+                        $product->getCategoryIds(),
+                        $product->getName(),
+                        $product->getShortDescription(),
+                        $product->getDescription(),
+                        $product->getPrice(),
+                        $product->getPrice(),//@todo priceOffer
+                        $product->getProductUrl(),
+                        $this->getProductImage($product)
+                ));
             }
-            return $result;
+            return $exporter;
         }
     }
 
     public function execute() : ResultInterface
     {
+        $response = $this->resultFactory->create(ResultFactory::TYPE_RAW);
         if (!$this->helper->isAuthed($this->getRequest()->getParam('auth', ''))) {
-            $response = $this->resultFactory->create(ResultFactory::TYPE_RAW);
             $response->setHttpResponseCode(401);
-            return $response;
-        }
-        try {
-            $storeId = $this->_getStoreId();
-            $result = $this->getProducts($storeId);
-        } catch (\Exception $e) {
-            $response = $this->resultFactory->create(ResultFactory::TYPE_RAW);
-            $response->setContents($e->getMessage());
-            $response->setHttpResponseCode(500);
-            return $response;
-        }
-        if ($result === null) {
-            $response = $this->resultFactory->create(ResultFactory::TYPE_RAW);
-            $response->setHttpResponseCode(404);
-            return $response;
-        }
-        $type = $this->getRequest()->getParam('type', 'json');
-        $type = in_array($type, ['json', 'csv']) ? $type : 'json';
-        if ($type === 'json') {
-            $response = $this->resultFactory->create(ResultFactory::TYPE_JSON);
-            $response->setData($result);
-            return $response;
-        } else/*if ($type === 'csv')*/ {
-            $response = $this->resultFactory->create(ResultFactory::TYPE_RAW);
-            $stream = fopen('data://text/plain,', 'w+');
-            foreach ($result as $val) {
-                fputcsv($stream, $val, ',', '"');
+        } else {
+            try {
+                $storeId = $this->_getStoreId();
+                $type = $this->getRequest()->getParam('type', 'csv');
+                $exporter = $this->getProducts($type === 'json' ? $type : 'csv', $storeId);
+                if ($exporter === null) {
+                    $response->setHttpResponseCode(404);
+                } else {
+                    $response->setContents($exporter->getContents());
+                    foreach ($exporter->getHttpHeaders() as $key => $value) {
+                        $response->setHeader($key, $value);
+                    }
+                }
+            } catch (\Exception $e) {
+                $response->setContents($e->getMessage());
+                $response->setHttpResponseCode(500);
             }
-            rewind($stream);
-            $response->setContents(stream_get_contents($stream));
-            return $response;
         }
+        return $response;
     }
     
 }
