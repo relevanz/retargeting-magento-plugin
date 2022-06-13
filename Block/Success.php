@@ -36,7 +36,7 @@ class Success extends AbstractTracking
             }
             $params = array(
                 'orderId' => (string) $order->getIncrementId(),
-                'amount' => number_format((float) $order->getGrandTotal(), 2, '.', ''),
+                'amount' => number_format((float) $order->getSubtotal(), 2, '.', ''),
                 'eventName' => implode(',', $itemsIds),
             );
         }
