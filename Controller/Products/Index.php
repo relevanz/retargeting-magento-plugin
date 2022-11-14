@@ -27,13 +27,13 @@ use Magento\Store\Api\Data\StoreInterface;
 
 class Index extends Action
 {
-    
+
     private $productsModel;
-    
+
     private $storeManager;
-    
+
     private $helper;
-    
+
     public function __construct(Products $productsModel, Data $helper, StoreManagerInterface $storeManager, Context $context)
     {
         $this->productsModel = $productsModel;
@@ -41,12 +41,12 @@ class Index extends Action
         $this->helper = $helper;
         parent::__construct($context);
     }
-    
+
     protected function getStore() : StoreInterface
     {
         return $this->storeManager->getStore();
     }
-    
+
     private function getProductImage (Product $product) :? string
     {
         $baseImage = $product->getImage();
@@ -69,25 +69,29 @@ class Index extends Action
     {
         $objectManager = ObjectManager::getInstance();
         $page = $this->getRequest()->getParam('page');
-        $collection = $this->productsModel->getCollection($store, $page === null ? null : (((int) $page) + 1));
+        $limit = $this->getRequest()->getParam('limit');
+        $collection = $this->productsModel->getCollection($store, $page === null ? null : (((int) $page) + 1), (int) $limit);
         if ($collection === null) {
             return null;
         } else {
             $exporter = $type === 'json' ? new ProductJsonExporter() : new ProductCsvExporter();
             foreach ($collection as $product) {
                 $product->setStore($store);
+                $product->setCustomerGroupId(\Magento\Customer\Model\Group::NOT_LOGGED_IN_ID);
                 $product = $objectManager->create(Product::class)->load($product->getId());
-                $exporter->addItem(new ProductExportItem(
+                if ($product->isSalable() && $product->isInStock()) {
+                    $exporter->addItem(new ProductExportItem(
                         (int) $product->getId(),
                         $product->getCategoryIds(),
                         $product->getName(),
-                        $product->getShortDescription(),
-                        $product->getDescription(),
-                        $product->getPrice(),
-                        $product->getPrice(),//@todo priceOffer
+                        (string) $product->getShortDescription(),
+                        (string) $product->getDescription(),
+                        (float) $product->getPrice(),
+                        (float) $product->getFinalPrice(1),
                         $product->getProductUrl(),
                         $this->getProductImage($product)
-                ));
+                    ));
+                }
             }
             return $exporter;
         }
@@ -117,5 +121,5 @@ class Index extends Action
         }
         return $response;
     }
-    
+
 }

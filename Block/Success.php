@@ -14,38 +14,27 @@
 namespace Relevanz\Tracking\Block;
 
 use Relevanz\Tracking\Block\AbstractTracking;
-use Magento\Sales\Model\Order as MagentoOrder;
 use Releva\Retargeting\Base\RelevanzApi;
 
 class Success extends AbstractTracking
 {
     
-    protected function getOrder() :? MagentoOrder
-    {
-        return $this->helper->getCheckoutSession()->getLastRealOrder();
-    }
+    protected $url = RelevanzApi::RELEVANZ_CONV_URL;
     
-    protected function getScriptUrl(string $clientId) : string
+    protected function getParameters() : array
     {
-        $order = $this->getOrder();
-        $params = [];
-        if($order !== null) {
+        $parameters = ['network' => 'relevanz', ];
+        if($order = $this->helper->getCheckoutSession()->getLastRealOrder()) {
+            /* @var $product \Magento\Sales\Model\Order */
             $itemsIds = [];
             foreach ($order->getAllVisibleItems() as $product) {
                 $itemsIds[] = $product->getProductId();
             }
-            $params = array(
-                'orderId' => (string) $order->getIncrementId(),
-                'amount' => number_format((float) $order->getSubtotal(), 2, '.', ''),
-                'eventName' => implode(',', $itemsIds),
-            );
+            $parameters['orderId'] = (string) $order->getIncrementId();
+            $parameters['amount'] = number_format((float) $order->getSubtotal(), 2, '.', '');
+            $parameters['eventName'] = implode(',', $itemsIds);
         }
-        return RelevanzApi::RELEVANZ_CONV_URL.'?'.http_build_query(array_merge(
-            [
-                'cid' => $clientId,
-                'network' => 'relevanz',
-            ],
-            $params
-        ));
+        return $parameters;
     }
+    
 }

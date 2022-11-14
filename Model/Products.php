@@ -10,27 +10,26 @@
 namespace Relevanz\Tracking\Model;
 
 use Magento\Catalog\Model\ProductFactory;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Module\Manager;
 use Magento\Store\Api\Data\StoreInterface;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 
 class Products
 {
-    
+
     static $pageLimit = 100;
-    
+
     protected $productFactory;
-    
+
     protected $moduleManager;
-    
+
     public function __construct(ProductFactory $productFactory, Manager $moduleManager)
     {
         $this->productFactory = $productFactory;
         $this->moduleManager = $moduleManager;
     }
-    
-    public function getCollection(StoreInterface $store = null, int $page = null) :? ProductCollection
+
+    public function getCollection(StoreInterface $store = null, int $page = null, int $limit) :? ProductCollection
     {
         $collection = $this->productFactory->create()->getCollection()
             ->addAttributeToSelect('sku')
@@ -39,8 +38,9 @@ class Products
             ->addAttributeToSelect('type_id')
             ->setStore($store)
         ;
+        $collection->getSelect()->where('e.type_id = "simple"');
         if ($page !== null) {
-            $collection->setPage($page, self::$pageLimit);
+            $collection->setPage($page, $limit === 0 ? self::$pageLimit : $limit);
         }
         if ($this->moduleManager->isEnabled('Magento_CatalogInventory')) {
             $collection

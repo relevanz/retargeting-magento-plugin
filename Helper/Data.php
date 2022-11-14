@@ -12,6 +12,7 @@ use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\Registry;
+use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\App\State;
 use Magento\Store\Model\StoreManagerInterface;
@@ -40,6 +41,8 @@ class Data extends AbstractHelper
     
     private $checkoutSession;
     
+    private $customer;
+    
     private $state;
     
     private $request;
@@ -53,6 +56,7 @@ class Data extends AbstractHelper
     public function __construct(
         Registry $registry,
         CheckoutSession $checkoutSession,
+        CustomerSession $customerSession,
         State $state,
         StoreManagerInterface $storeManager,
         Context $context,
@@ -61,6 +65,7 @@ class Data extends AbstractHelper
     ) {
         $this->registry = $registry;
         $this->checkoutSession = $checkoutSession;
+        $this->customer = $customerSession->getCustomer();
         $this->resourceConfig = $resourceConfig;
         $this->storeManager = $storeManager;
         $this->messageManager = $messageManager;
@@ -79,6 +84,10 @@ class Data extends AbstractHelper
         return $this->checkoutSession;
     }
     
+    public function getCustomer() : \Magento\Customer\Model\Customer
+    {
+        return $this->customer;
+    }
     public function getShopInfo() : array
     {
         $baseUrl = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_WEB);
@@ -104,6 +113,7 @@ class Data extends AbstractHelper
                         'page' => ['type' => 'integer', 'default' => 0, 'optional' => true, 'info' => [
                             'items-per-page' => Products::$pageLimit,
                         ], ],
+                        'limit' => ['type' => 'integer', 'optional' => true, 'info' => 'changes items-per-page' , ],
                     ],
                 ],
             ]

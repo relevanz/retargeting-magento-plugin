@@ -14,17 +14,15 @@
 namespace Relevanz\Tracking\Block;
 
 use Relevanz\Tracking\Block\AbstractTracking;
-use Releva\Retargeting\Base\RelevanzApi;
 
 class Page extends AbstractTracking{
     
-    protected function getScriptUrl(string $clientId) : string
+    protected function getParameters() : array
     {
-        return RelevanzApi::RELEVANZ_TRACKER_URL.'?'.http_build_query([
-            'cid' => $clientId,
+        return [
             't' => 'd',
-            'action' => 's'
-        ]);
+            'action' => 's',
+        ];
     }
     
 }

@@ -14,27 +14,20 @@
 namespace Relevanz\Tracking\Block;
 
 use Relevanz\Tracking\Block\AbstractTracking;
-use Releva\Retargeting\Base\RelevanzApi;
-use Magento\Catalog\Model\Product as MagentoProduct;
 
 class Product extends AbstractTracking
 {
     
-    protected function getCurrentProduct() :? MagentoProduct
-    {
-        return $this->helper->getRegistry()->registry('current_product');
-    }
-    
-    protected function getScriptUrl(string $clientId) : string
-    {
-        return RelevanzApi::RELEVANZ_TRACKER_URL.'?'.http_build_query(array_merge(
-            [
-                'cid' => $clientId,
-                't' => 'd',
-                'action' => 'p',
-            ],
-            $this->getCurrentProduct() === null ? [] : ['id' => $this->getCurrentProduct()->getId()]
-        ));
+    protected function getParameters(): array {
+        $parameters = [
+            't' => 'd',
+            'action' => 'p',
+        ];
+        if ($product = $this->helper->getRegistry()->registry('current_product')) {
+            /* @var $product \Magento\Catalog\Model\Product */
+            $parameters['id'] = $product->getId();
+        }
+        return $parameters;
     }
     
 }
